@@ -28,10 +28,8 @@
       "error",
       "single"
     ],
-    "semi": [
-      "error",
-      "always"
-    ],
+    "semi": "off",
+    "@typescript-eslint/semi": ["error"],
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-empty-interface": "off"
   }

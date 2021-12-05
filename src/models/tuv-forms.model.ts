@@ -90,9 +90,14 @@ export default function (app: Application): typeof Model {
       type: DataTypes.STRING,
       allowNull: true
     },
+
+    tid: {
+      type: DataTypes.UUIDV4,
+      allowNull: false
+    }
   }, {
     hooks: {
-      beforeCount(options: any): HookReturn {
+      beforeCount (options: any): HookReturn {
         options.raw = true;
       }
     }

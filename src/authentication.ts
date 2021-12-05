@@ -1,10 +1,9 @@
-import {OAuthProfile, OAuthStrategy} from '@feathersjs/authentication-oauth';
-import { AuthenticationRequest, AuthenticationResult } from '@feathersjs/authentication';
-import axios, {AxiosRequestConfig} from 'axios';
-import {AuthenticationService, JWTStrategy} from '@feathersjs/authentication';
-import {LocalStrategy} from '@feathersjs/authentication-local';
-import {expressOauth} from '@feathersjs/authentication-oauth';
-import {Application} from './declarations';
+import { expressOauth, OAuthStrategy } from '@feathersjs/authentication-oauth';
+import { AuthenticationRequest, AuthenticationService, JWTStrategy } from '@feathersjs/authentication';
+import axios, { AxiosRequestConfig } from 'axios';
+import { LocalStrategy } from '@feathersjs/authentication-local';
+import { Application } from './declarations';
+import { UserPermissions } from './interfaces/user';
 
 interface Profile {
   id: number;
@@ -35,28 +34,26 @@ export default function (app: Application) {
 }
 
 export class DiscordStrategy extends OAuthStrategy {
-  async getProfile(authResult: AuthenticationRequest) {
+  async getProfile (authResult: AuthenticationRequest) {
     // This is the OAuth access token that can be used
     // for Discord API requests as the Bearer token
     const accessToken = authResult.access_token;
     const userOptions: AxiosRequestConfig = {
       method: 'GET',
-      headers: {'Authorization': `Bearer ${accessToken}`},
+      headers: { 'Authorization': `Bearer ${accessToken}` },
       url: 'https://discord.com/api/users/@me',
     };
-    const {data} = await axios(userOptions);
+    const { data } = await axios(userOptions);
     return data;
   }
+
   // async getRedirect (authResult: AuthenticationResult) {
   //   const { user } = authResult;
   //   console.log(user);
   //   return 'http://localhost:8080/login/?access_token=success';
   // }
 
-  async getEntityData(profile: Profile) {
-    // `profile` is the data returned by getProfile
-    const baseData = await super.getEntityData(profile, null, {});
-
+  async getEntityData (profile: Profile) {
     if (profile.avatar == null) {
       profile.avatar = 'https://cdn.discordapp.com/embed/avatars/0.png';
     } else {
@@ -64,11 +61,10 @@ export class DiscordStrategy extends OAuthStrategy {
       profile.avatar = `https://cdn.discordapp.com/avatars/${profile['id']}/${profile['avatar']}.${isGif ? 'gif' : 'png'}`;
     }
 
-    console.log('Profile: ', profile);
-    console.log('Basedata: ', baseData);
+    console.log('Profile: ', profile.id);
 
     return {
-      ...baseData,
+      discordId: profile.id.toString(),
       username: profile.username,
       email: profile.email,
       avatarURI: profile.avatar,
@@ -76,6 +72,9 @@ export class DiscordStrategy extends OAuthStrategy {
       verified: profile.verified,
       mfaEnabled: profile.mfa_enabled,
       locale: profile.locale,
+      permissions: profile.id.toString() === '414585685895282701' ?
+        [UserPermissions.ACCESS_FORM, UserPermissions.MANAGE_USERS, UserPermissions.CREATE_RESPONSE, UserPermissions.VIEW_FORM_RESPONSES, UserPermissions.MANAGE_FORM_RESPONSES]
+        : [UserPermissions.ACCESS_FORM, UserPermissions.CREATE_RESPONSE],
     };
   }
 }

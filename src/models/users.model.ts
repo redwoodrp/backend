@@ -7,15 +7,8 @@ import { HookReturn } from 'sequelize/types/lib/hooks';
 export default function (app: Application): typeof Model {
   const sequelizeClient: Sequelize = app.get('sequelizeClient');
   const users = sequelizeClient.define('users', {
-    /*id: {
-      type:DataTypes.INTEGER,
-      unique: true,
-      primaryKey: true,
-      allowNull: false,
-      autoIncrement: true,
-    },*/
     discordId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       // unique: true,
       // primaryKey: true,
       allowNull: false,
@@ -46,6 +39,9 @@ export default function (app: Application): typeof Model {
       type: DataTypes.BOOLEAN,
     },
 
+    permissions: {
+      type: DataTypes.ARRAY(DataTypes.NUMBER),
+    }
   }, {
     hooks: {
       beforeCount(options: any): HookReturn {

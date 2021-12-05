@@ -1,6 +1,9 @@
 config/local.json
 public/*
 
+# db
+backend.sqlite
+
 # Logs
 logs
 *.log
