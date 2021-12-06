@@ -20,7 +20,7 @@ export default class DiscordBot {
     console.log('Bot test log');
   }
 
-  public async generateImage (data: TuvFormData): Promise<MessageAttachment> {
+  public async generateImage (data: TuvFormData): Promise<Buffer> {
     // Image manipulation starts
     const background = await Canvas.loadImage('./src/bot/assets/tuv-template.jpg');
     registerFont('./src/bot/assets/NanumPenScript-Regular.ttf', { family: 'nanumpen' });
@@ -83,7 +83,7 @@ export default class DiscordBot {
       });
     });
 
-    return new MessageAttachment(canvas.toBuffer(), 'tuv.jpg');
+    return canvas.toBuffer();
   }
 
   public getFullUsername (user: User): string {

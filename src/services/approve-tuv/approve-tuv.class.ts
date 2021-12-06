@@ -1,11 +1,12 @@
 import { Id, NullableId, Paginated, Params, ServiceMethods } from '@feathersjs/feathers';
 import { Application } from '../../declarations';
 import DiscordBot from '../../bot';
-import { Snowflake } from 'discord.js';
+import { MessageAttachment, Snowflake } from 'discord.js';
 import { Model, Sequelize } from 'sequelize';
 import TuvFormData from '../../interfaces/tuvForms';
 import { NotFound } from '@feathersjs/errors';
 import app from '../../app';
+import fs, { promises as fsp } from 'fs';
 
 interface Data {
 }
@@ -53,7 +54,15 @@ export class ApproveTuv implements ServiceMethods<Data> {
     const formData = res.get({ plain: true }) as TuvFormData;
 
     try {
-      const attachment = await bot.generateImage(formData);
+      const buffer = await bot.generateImage(formData);
+
+      if (!fs.existsSync(`./public/images/${data.userId}`)) await fsp.mkdir(`./public/images/${data.userId}/`);
+      const res = await fsp.writeFile(`./public/images/${data.userId}/${formData.tid}.jpg`, buffer);
+
+      console.log(res);
+
+      const attachment = new MessageAttachment(buffer, 'tuv.jpg');
+
       const user = await bot.client.users.fetch(data.userId);
       await user.send({
         files: [attachment],

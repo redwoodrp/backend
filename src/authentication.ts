@@ -72,9 +72,10 @@ export class DiscordStrategy extends OAuthStrategy {
       verified: profile.verified,
       mfaEnabled: profile.mfa_enabled,
       locale: profile.locale,
-      permissions: profile.id.toString() === '414585685895282701' ?
-        [UserPermissions.ACCESS_FORM, UserPermissions.MANAGE_USERS, UserPermissions.CREATE_RESPONSE, UserPermissions.VIEW_FORM_RESPONSES, UserPermissions.MANAGE_FORM_RESPONSES]
-        : [UserPermissions.ACCESS_FORM, UserPermissions.CREATE_RESPONSE],
+      permissions: [UserPermissions.ACCESS_FORM, UserPermissions.CREATE_RESPONSE],
+      // permissions: profile.id.toString() === '414585685895282701' ?
+      //   [UserPermissions.ACCESS_FORM, UserPermissions.MANAGE_USERS, UserPermissions.CREATE_RESPONSE, UserPermissions.VIEW_FORM_RESPONSES, UserPermissions.MANAGE_FORM_RESPONSES]
+      //   : [UserPermissions.ACCESS_FORM, UserPermissions.CREATE_RESPONSE],
     };
   }
 }
