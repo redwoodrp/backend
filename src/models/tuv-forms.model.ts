@@ -7,6 +7,18 @@ import { HookReturn } from 'sequelize/types/lib/hooks';
 export default function (app: Application): typeof Model {
   const sequelizeClient: Sequelize = app.get('sequelizeClient');
   const tuvForms = sequelizeClient.define('tuv_forms', {
+    // Private
+    approved: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+    },
+
+    inspector: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+
+    // Public to user
     owner: {
       type: DataTypes.STRING,
       allowNull: false,
