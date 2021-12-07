@@ -31,7 +31,7 @@ export default {
     all: [
       (context: HookContext) => {
         if (context.method !== 'get' && context.method !== 'find') {
-          return authenticate('jwt');
+          authenticate('jwt');
         }
       },
     ],
