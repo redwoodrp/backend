@@ -5,10 +5,7 @@ import { Forbidden } from '@feathersjs/errors';
 export default function checkPermissions (context: HookContext, permissions: UserPermissions[]): HookContext {
   let hasPermissions = true;
 
-  console.log(context.params.user);
-
   const user = context.params.user as User;
-
   const userPermissions: string[] = Array.isArray(user.permissions) ? user.permissions as unknown as string[] : (user.permissions as unknown as string).split(',');
 
   permissions.forEach((permission) => {
