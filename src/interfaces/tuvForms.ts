@@ -1,4 +1,12 @@
 export default interface TuvFormData {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+
+  inspector: string | null;
+  approved: boolean | null;
+  declineReason: string | null;
+
   owner: string;
   discordName: string;
   licensePlate: string;

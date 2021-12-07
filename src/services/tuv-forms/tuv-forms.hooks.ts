@@ -1,7 +1,6 @@
 import * as authentication from '@feathersjs/authentication';
 import { HookContext } from '@feathersjs/feathers';
 import User, { UserPermissions } from '../../interfaces/user';
-import { Forbidden } from '@feathersjs/errors';
 // Don't remove this comment. It's needed to format import lines nicely.
 
 const { authenticate } = authentication.hooks;
@@ -22,7 +21,8 @@ const checkAccessRights = (context: HookContext) => {
   if (hasPermission) return context;
 
   context.data.approved = false;
-  context.data.inspector = null;
+  context.data.inspector = '';
+  context.data.declineReason = '';
   return context;
 };
 

@@ -4,7 +4,7 @@ import DiscordBot from '../../bot';
 import { MessageAttachment, Snowflake } from 'discord.js';
 import { Model, Sequelize } from 'sequelize';
 import TuvFormData from '../../interfaces/tuvForms';
-import { NotFound } from '@feathersjs/errors';
+import { BadRequest, NotFound, NotImplemented } from '@feathersjs/errors';
 import app from '../../app';
 import fs, { promises as fsp } from 'fs';
 
@@ -25,7 +25,7 @@ export class ApproveTuv implements ServiceMethods<Data> {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async find (params?: Params): Promise<Data[] | Paginated<Data>> {
-    return [];
+    throw new NotImplemented();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -80,16 +80,44 @@ Have fun playing!`,
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async update (id: NullableId, data: Data, params?: Params): Promise<Data> {
-    return data;
+    throw new NotImplemented();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async patch (id: NullableId, data: Data, params?: Params): Promise<Data> {
-    return data;
+    throw new NotImplemented();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async remove (id: NullableId, params?: Params): Promise<Data> {
-    return { id };
+  async remove (id: Id, params?: Params): Promise<Data> {
+    // decline
+    interface QueryParams {
+      userId: string;
+    }
+
+    if (params && params.query && (params.query as QueryParams).userId) {
+      const bot: DiscordBot = this.app.get('discordBot');
+      if (!bot) throw new Error('Internal server error: discordbot is not defined on app');
+
+      const sq: Sequelize = this.app.get('sequelizeClient');
+      if (!sq) throw new Error('Internal server error: sequelizeClient couldn\'t be found on app.get');
+
+      const res: Model | null = await sq.models.tuv_forms.findOne({
+        where: {
+          id,
+        }
+      }) as Model | null;
+      if (!res) return new NotFound(`A TÜV form with the id '${id}' does not exist`);
+      const formData = res.get({ plain: true }) as TuvFormData;
+
+      if (!formData.inspector) throw new BadRequest('Malformed request data.');
+      const user = await bot.client.users.fetch(formData.inspector);
+
+      await bot.sendMessage((params.query as QueryParams).userId, `Your TÜV request got declined by ${bot.getFullUsername(user)}.\nReason: \`\`\`\n${formData.declineReason}\n\`\`\``);
+
+      return {};
+    }
+
+    throw new BadRequest('Malformed request data.');
   }
 }
