@@ -29,7 +29,11 @@ const checkAccessRights = (context: HookContext) => {
 export default {
   before: {
     all: [
-      authenticate('jwt'),
+      (context: HookContext) => {
+        if (context.method !== 'get' && context.method !== 'find') {
+          return authenticate('jwt');
+        }
+      },
     ],
     find: [],
     get: [],
