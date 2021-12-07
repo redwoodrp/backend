@@ -1,6 +1,9 @@
 import * as authentication from '@feathersjs/authentication';
 import { HookContext } from '@feathersjs/feathers';
 import User, { UserPermissions } from '../../interfaces/user';
+import { Sequelize } from 'sequelize';
+import app from '../../app';
+import TuvFormData from '../../interfaces/tuvForms';
 // Don't remove this comment. It's needed to format import lines nicely.
 
 const { authenticate } = authentication.hooks;
@@ -18,11 +21,19 @@ const checkAccessRights = (context: HookContext) => {
     }
   });
 
-  if (hasPermission) return context;
+  if (hasPermission || !context.id) return context;
 
-  context.data.approved = false;
-  context.data.inspector = '';
-  context.data.declineReason = '';
+  const sq: Sequelize = app.get('sequelizeClient') as Sequelize;
+  const form: TuvFormData = sq.models.tuv_forms.findOne({
+    where: {
+      id: context.id,
+    },
+  }) as unknown as TuvFormData;
+
+  context.data.checked = form.checked;
+  context.data.approved = form.approved;
+  context.data.inspector = form.inspector;
+  context.data.declineReason = form.declineReason;
   return context;
 };
 
