@@ -10,7 +10,7 @@ export default function (app: Application): typeof Model {
     // Private
     checked: {
       type: DataTypes.BOOLEAN,
-      allowNull: false,
+      allowNull: true,
     },
 
     approved: {
