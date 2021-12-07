@@ -68,7 +68,7 @@ export class ApproveTuv implements ServiceMethods<Data> {
         files: [attachment],
         content: `Hello, ${bot.getFullUsername(user)}!
 Here is your brand-new TÜV card. If you encounter mistakes, please try submitting another TÜV or DM JustMe#8491 when the problem persist.
-Here is a permanent link you can use to access the TÜV online: ${app.get('frontend')}/me/tuvs/?id=${formData.tid}.
+Here is a permanent link you can use to access the TÜV online: ${app.get('frontend')}/me/tuvs/${formData.tid}.
 Have fun playing!`,
       });
     } catch (e) {
