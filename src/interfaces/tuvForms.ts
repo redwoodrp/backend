@@ -3,6 +3,7 @@ export default interface TuvFormData {
   createdAt: string;
   updatedAt: string;
 
+  checked: boolean | null;
   inspector: string | null;
   approved: boolean | null;
   declineReason: string | null;

@@ -111,7 +111,7 @@ Have fun playing!`,
       const formData = res.get({ plain: true }) as TuvFormData;
 
       if (!formData.inspector) throw new BadRequest('Malformed request data.');
-      await bot.sendMessage((params.query as QueryParams).userId, `Your TÜV request (${app.get('frontend')}/me/tuvs/${formData.tid}) got declined by ${formData.inspector}.\nReason: \`\`\`\n${formData.declineReason}\n\`\`\``);
+      await bot.sendMessage((params.query as QueryParams).userId, `Your TÜV request \`${formData.vehicleBrand} ${formData.vehicleModel} [${formData.licensePlate}]\` got declined by ${formData.inspector}.\nReason: \`\`\`\n${formData.declineReason}\n\`\`\`\n\n`);
 
       return {};
     }

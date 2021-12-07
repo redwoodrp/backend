@@ -8,6 +8,11 @@ export default function (app: Application): typeof Model {
   const sequelizeClient: Sequelize = app.get('sequelizeClient');
   const tuvForms = sequelizeClient.define('tuv_forms', {
     // Private
+    checked: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
+
     approved: {
       type: DataTypes.BOOLEAN,
       allowNull: true,
