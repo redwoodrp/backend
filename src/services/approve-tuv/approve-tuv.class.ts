@@ -92,7 +92,7 @@ Have fun playing!`,
   async remove (id: Id, params?: Params): Promise<Data> {
     // decline
     interface QueryParams {
-      userId: string;
+      userId: Snowflake;
     }
 
     if (params && params.query && (params.query as QueryParams).userId) {
@@ -111,9 +111,7 @@ Have fun playing!`,
       const formData = res.get({ plain: true }) as TuvFormData;
 
       if (!formData.inspector) throw new BadRequest('Malformed request data.');
-      const user = await bot.client.users.fetch(formData.inspector);
-
-      await bot.sendMessage((params.query as QueryParams).userId, `Your TÜV request got declined by ${bot.getFullUsername(user)}.\nReason: \`\`\`\n${formData.declineReason}\n\`\`\``);
+      await bot.sendMessage((params.query as QueryParams).userId, `Your TÜV request (${app.get('frontend')}/me/tuvs/${formData.tid}) got declined by ${formData.inspector}.\nReason: \`\`\`\n${formData.declineReason}\n\`\`\``);
 
       return {};
     }
