@@ -18,6 +18,11 @@ export default function (app: Application): typeof Model {
       allowNull: true,
     },
 
+    declineReason: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+
     // Public to user
     owner: {
       type: DataTypes.STRING,
