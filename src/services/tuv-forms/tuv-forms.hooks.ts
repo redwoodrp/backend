@@ -4,6 +4,7 @@ import User, { UserPermissions } from '../../interfaces/user';
 import { Sequelize } from 'sequelize';
 import app from '../../app';
 import TuvFormData from '../../interfaces/tuvForms';
+import { Forbidden } from '@feathersjs/errors';
 // Don't remove this comment. It's needed to format import lines nicely.
 
 const { authenticate } = authentication.hooks;
@@ -12,6 +13,8 @@ const checkAccessRights = (context: HookContext) => {
   console.log(context.params.user);
   const allowedPermissions = [UserPermissions.MANAGE_FORM_RESPONSES];
   const user = context.params.user as User;
+
+  if (!context.params.provider) return context; // allow internal
   const userPermissions = (user.permissions as unknown as string).split(',');
 
   let hasPermission = true;

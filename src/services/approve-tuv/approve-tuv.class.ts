@@ -38,12 +38,13 @@ export class ApproveTuv implements ServiceMethods<Data> {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async create (rawData: Data, params?: Params): Promise<Data> {
     const data: { userId: Snowflake, dbId: number } = rawData as { userId: Snowflake, dbId: number };
+    if (!data.userId && !data.dbId) throw new BadRequest();
 
     const bot: DiscordBot = this.app.get('discordBot');
-    if (!bot) return data;
+    if (!bot) throw new BadRequest();
 
     const sq: Sequelize = this.app.get('sequelizeClient');
-    if (!sq) return data;
+    if (!sq) throw new BadRequest();
 
     const res: Model | null = await sq.models.tuv_forms.findOne({
       where: {
@@ -57,9 +58,7 @@ export class ApproveTuv implements ServiceMethods<Data> {
       const buffer = await bot.generateImage(formData);
 
       if (!fs.existsSync(`./public/images/${data.userId}`)) await fsp.mkdir(`./public/images/${data.userId}/`);
-      const res = await fsp.writeFile(`./public/images/${data.userId}/${formData.tid}.jpg`, buffer);
-
-      console.log(res);
+      await fsp.writeFile(`./public/images/${data.userId}/${formData.tid}.jpg`, buffer);
 
       const attachment = new MessageAttachment(buffer, 'tuv.jpg');
 
@@ -71,11 +70,20 @@ Here is your brand-new TÜV card. If you encounter mistakes, please try submitti
 Here is a permanent link you can use to access the TÜV online: ${app.get('frontend')}/me/tuvs/${formData.tid}.
 Have fun playing!`,
       });
+
+      await app.service('tuv-forms')
+        .patch(data.dbId, {
+          checked: true,
+          approved: true,
+          inspector: bot.getFullUsername(user),
+        });
+      console.log('patched');
+
+      return data;
     } catch (e) {
       console.log(e);
+      throw new Error((e as unknown as Error).message);
     }
-
-    return data;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -93,9 +101,13 @@ Have fun playing!`,
     // decline
     interface QueryParams {
       userId: Snowflake;
+      declineReason: string;
     }
 
-    if (params && params.query && (params.query as QueryParams).userId) {
+    if (!params) throw new BadRequest();
+    const query = (params.query as QueryParams);
+
+    if (query && query.userId && query.declineReason) {
       const bot: DiscordBot = this.app.get('discordBot');
       if (!bot) throw new Error('Internal server error: discordbot is not defined on app');
 
@@ -109,10 +121,18 @@ Have fun playing!`,
       }) as Model | null;
       if (!res) return new NotFound(`A TÜV form with the id '${id}' does not exist`);
       const formData = res.get({ plain: true }) as TuvFormData;
+      const inspector = await bot.client.users.fetch(query.userId);
 
-      if (!formData.inspector) throw new BadRequest('Malformed request data.');
-      await bot.sendMessage((params.query as QueryParams).userId, `Your TÜV request \`${formData.vehicleBrand} ${formData.vehicleModel} [${formData.licensePlate}]\` got declined by ${formData.inspector}.\nReason: \`\`\`\n${formData.declineReason}\n\`\`\`\n\n`);
+      if (!inspector) throw new BadRequest('Malformed request data.');
+      await bot.sendMessage(query.userId, `Your TÜV request \`${formData.vehicleBrand} ${formData.vehicleModel} [${formData.licensePlate}]\` got declined by ${bot.getFullUsername(inspector)}.\nReason: \`\`\`\n${formData.declineReason}\n\`\`\``);
 
+      await app.service('tuv-forms')
+        .patch(id, {
+          checked: true,
+          approved: false,
+          inspector: bot.getFullUsername(inspector),
+          declineReason: query.declineReason.length === 0 ? 'No reason specified.' : query.declineReason,
+        });
       return {};
     }
 
