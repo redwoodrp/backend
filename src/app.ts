@@ -45,10 +45,6 @@ try {
 } catch (e) {
   console.log('public/favicon.ico doesn\'t exist!');
 }
-// Host the public folder
-app.use('/', express.static(app.get('public')));
-app.use(historyMiddleware);
-
 // Set up Plugins and providers
 app.configure(express.rest());
 app.configure(socketio());
@@ -62,6 +58,10 @@ app.configure(authentication);
 app.configure(services);
 // Set up event channels (see channels.ts)
 app.configure(channels);
+
+// Host public folder
+app.use(historyMiddleware);
+app.use('/', express.static(app.get('public')));
 
 // Configure a middleware for 404s and the error handler
 app.use(express.notFound());
