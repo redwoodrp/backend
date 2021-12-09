@@ -1,10 +1,11 @@
-import { Client, Intents, MessageAttachment, Snowflake, User } from 'discord.js';
+import { Client, Intents, Snowflake, User } from 'discord.js';
 import TuvFormData from '../interfaces/tuvForms';
 import Canvas, { registerFont } from 'canvas';
+import app from '../app';
 
 export default class DiscordBot {
   public client = new Client({ intents: [Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS] });
-  private token = 'OTE0ODk5OTczMTk4NDU0ODM1.YaTw_w.b08ngN_EFkmLmBLFdA4Mxh-NBJI';
+  private token = app.get('discord-token');
 
   constructor () {
     this.client.on('ready', () => {
