@@ -1,3 +1,4 @@
+import historyApiFallback from 'connect-history-api-fallback';
 import path from 'path';
 import favicon from 'serve-favicon';
 import compress from 'compression';
@@ -24,6 +25,11 @@ import sequelize from './sequelize';
 const app: Application = express(feathers());
 export type HookContext<T = any> = { app: Application } & FeathersHookContext<T>;
 
+const historyMiddleware = historyApiFallback({
+  verbose: true,
+  logger: console.log.bind(console),
+});
+
 // Load app configuration
 app.configure(configuration());
 // Enable security, CORS, compression, favicon and body parsing
@@ -31,10 +37,15 @@ app.use(helmet({
   contentSecurityPolicy: false
 }));
 app.use(cors());
+app.use(historyMiddleware);
 app.use(compress());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(favicon(path.join(app.get('public'), 'favicon.ico')));
+try {
+  app.use(favicon(path.join(app.get('public'), 'favicon.ico')));
+} catch (e) {
+  console.log('public/favicon.ico doesn\'t exist!');
+}
 // Host the public folder
 app.use('/', express.static(app.get('public')));
 
