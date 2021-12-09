@@ -37,7 +37,6 @@ app.use(helmet({
   contentSecurityPolicy: false
 }));
 app.use(cors());
-app.use(historyMiddleware);
 app.use(compress());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -62,6 +61,8 @@ app.configure(authentication);
 app.configure(services);
 // Set up event channels (see channels.ts)
 app.configure(channels);
+
+app.use(historyMiddleware);
 
 // Configure a middleware for 404s and the error handler
 app.use(express.notFound());
