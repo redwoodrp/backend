@@ -27,6 +27,15 @@ const checkAccessRights = (context: HookContext) => {
   if (hasPermission || !context.id) return context;
 
   const sq: Sequelize = app.get('sequelizeClient') as Sequelize;
+
+  if (context.method === 'create') {
+    context.data.checked = false;
+    context.data.approved = false;
+    context.data.inspector = null;
+    context.data.declineReason = null;
+    return context;
+  }
+
   const form: TuvFormData = sq.models.tuv_forms.findOne({
     where: {
       id: context.id,
