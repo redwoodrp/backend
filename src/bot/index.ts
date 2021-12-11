@@ -21,6 +21,13 @@ export default class DiscordBot {
     console.log('Bot test log');
   }
 
+  public calculateCategory (weight: number, wheels: number): string {
+    if (weight < 3500) {
+      if (wheels === 4) return 'B';
+    }
+    return 'B';
+  }
+
   public async generateImage (data: TuvFormData): Promise<Buffer> {
     // Image manipulation starts
     const background = await Canvas.loadImage('./src/bot/assets/tuv-template.jpg');
@@ -41,9 +48,9 @@ export default class DiscordBot {
 
     const vehicle: TUVFormPrint = {
       ...data,
-      signature: 'Test',
-      expiresIn: new Date((new Date(data.firstRegistry ?? '')).setMonth((new Date(data.firstRegistry ?? '')).getMonth()+1)).toDateString(),
-      category: 'B',
+      signature: data.inspector || 'unknown',
+      expiresIn: new Date((new Date(data.firstRegistry ?? '')).setMonth((new Date(data.firstRegistry ?? '')).getMonth() + 1)).toDateString(),
+      category: this.calculateCategory(data.vehicleWeight, 4),
     };
 
     console.log(vehicle.owner);
@@ -84,7 +91,7 @@ export default class DiscordBot {
       });
     });
 
-    return canvas.toBuffer();
+    return canvas.toBuffer('image/jpeg', { quality: 0.5, progressive: false, chromaSubsampling: true, });
   }
 
   public getFullUsername (user: User): string {
