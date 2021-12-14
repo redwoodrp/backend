@@ -37,7 +37,7 @@ export class ApproveTuv implements ServiceMethods<Data> {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async create (rawData: Data, params?: Params): Promise<Data> {
-    const data: { userId: Snowflake, dbId: number } = rawData as { userId: Snowflake, dbId: number };
+    const data: { userId: Snowflake, dbId: number, inspector: Snowflake, } = rawData as { userId: Snowflake, dbId: number, inspector: Snowflake };
     if (!data.userId && !data.dbId) throw new BadRequest();
 
     const bot: DiscordBot = this.app.get('discordBot');
@@ -71,11 +71,13 @@ Here is a permanent link you can use to access the TÜV online: ${app.get('front
 Have fun playing!`,
       });
 
+      const inspector = await bot.client.users.fetch(data.inspector);
+
       await app.service('tuv-forms')
         .patch(data.dbId, {
           checked: true,
           approved: true,
-          inspector: bot.getFullUsername(user),
+          inspector: bot.getFullUsername(inspector),
         });
       console.log('patched');
 
@@ -100,6 +102,7 @@ Have fun playing!`,
   async remove (id: Id, params?: Params): Promise<Data> {
     // decline
     interface QueryParams {
+      inspector: Snowflake;
       userId: Snowflake;
       declineReason: string;
     }
@@ -121,7 +124,7 @@ Have fun playing!`,
       }) as Model | null;
       if (!res) return new NotFound(`A TÜV form with the id '${id}' does not exist`);
       const formData = res.get({ plain: true }) as TuvFormData;
-      const inspector = await bot.client.users.fetch(query.userId);
+      const inspector = await bot.client.users.fetch(query.inspector);
 
       if (!inspector) throw new BadRequest('Malformed request data.');
       await bot.sendMessage(query.userId, `Your TÜV request \`${formData.vehicleBrand} ${formData.vehicleModel} [${formData.licensePlate}]\` got declined by ${bot.getFullUsername(inspector)}.\nReason: \`\`\`\n${params.declineReason || 'No reason specified'}\n\`\`\``);
