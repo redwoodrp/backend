@@ -55,7 +55,8 @@ export class ApproveTuv implements ServiceMethods<Data> {
     const formData = res.get({ plain: true }) as TuvFormData;
 
     try {
-      const buffer = await bot.generateImage(formData);
+      const inspector = await bot.client.users.fetch(data.inspector);
+      const buffer = await bot.generateImage({ ...formData, inspector: bot.getFullUsername(inspector) });
 
       if (!fs.existsSync(`./public/images/${data.userId}`)) await fsp.mkdir(`./public/images/${data.userId}/`);
       await fsp.writeFile(`./public/images/${data.userId}/${formData.tid}.jpg`, buffer);
@@ -71,7 +72,6 @@ Here is a permanent link you can use to access the TÜV online: ${app.get('front
 Have fun playing!`,
       });
 
-      const inspector = await bot.client.users.fetch(data.inspector);
 
       await app.service('tuv-forms')
         .patch(data.dbId, {
@@ -125,9 +125,10 @@ Have fun playing!`,
       if (!res) return new NotFound(`A TÜV form with the id '${id}' does not exist`);
       const formData = res.get({ plain: true }) as TuvFormData;
       const inspector = await bot.client.users.fetch(query.inspector);
+      const user = await bot.client.users.fetch(query.userId);
 
       if (!inspector) throw new BadRequest('Malformed request data.');
-      await bot.sendMessage(query.userId, `Your TÜV request \`${formData.vehicleBrand} ${formData.vehicleModel} [${formData.licensePlate}]\` got declined by ${bot.getFullUsername(inspector)}.\nReason: \`\`\`\n${params.declineReason || 'No reason specified'}\n\`\`\``);
+      await bot.sendMessage(query.userId, `Your TÜV request \`${formData.vehicleBrand} ${formData.vehicleModel} [${formData.licensePlate}]\` got declined by ${bot.getFullUsername(user)}.\nReason: \`\`\`\n${params.declineReason || 'No reason specified'}\n\`\`\``);
 
       await app.service('tuv-forms')
         .patch(id, {

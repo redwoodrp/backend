@@ -48,7 +48,7 @@ export default class DiscordBot {
 
     const vehicle: TUVFormPrint = {
       ...data,
-      signature: data.inspector || 'unknown',
+      signature: data.inspector?.split('#')[0] || 'unknown',
       expiresIn: new Date((new Date(data.firstRegistry ?? '')).setMonth((new Date(data.firstRegistry ?? '')).getMonth() + 1)).toDateString(),
       category: this.calculateCategory(data.vehicleWeight, 4),
     };
