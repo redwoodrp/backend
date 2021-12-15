@@ -128,7 +128,7 @@ Have fun playing!`,
       const user = await bot.client.users.fetch(query.userId);
 
       if (!inspector) throw new BadRequest('Malformed request data.');
-      await bot.sendMessage(query.userId, `Your TÜV request \`${formData.vehicleBrand} ${formData.vehicleModel} [${formData.licensePlate}]\` got declined by ${bot.getFullUsername(user)}.\nReason: \`\`\`\n${params.declineReason || 'No reason specified'}\n\`\`\``);
+      await bot.sendMessage(query.userId, `Your TÜV request \`${formData.vehicleBrand} ${formData.vehicleModel} [${formData.licensePlate}]\` got declined by ${bot.getFullUsername(user)}.\nReason: \`\`\`\n${query.declineReason || 'No reason specified'}\n\`\`\``);
 
       await app.service('tuv-forms')
         .patch(id, {
