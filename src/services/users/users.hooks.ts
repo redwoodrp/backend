@@ -36,7 +36,14 @@ export default {
         }
       }
     ],
-    find: [authenticate('jwt')],
+    find: [authenticate('jwt'), (hook: HookContext) => {
+      if(hook.params.query && hook.params.query.$paginate) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        hook.params.paginate = hook.params.query.$paginate === 'false' || hook.params.query.$paginate === false;
+        delete hook.params.query.$paginate;
+      }
+    }],
     get: [],
     create: [hashPassword('password'), disallow('external')],
     update: [hashPassword('password'), authenticate('jwt')],
