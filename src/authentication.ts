@@ -4,6 +4,8 @@ import axios, { AxiosRequestConfig } from 'axios';
 import { LocalStrategy } from '@feathersjs/authentication-local';
 import { Application } from './declarations';
 import { UserPermissions } from './interfaces/user';
+import app from './app';
+import { Sequelize } from 'sequelize';
 
 interface Profile {
   id: number;
@@ -63,6 +65,15 @@ export class DiscordStrategy extends OAuthStrategy {
 
     console.log('Profile: ', profile.id);
 
+    const sequelizeClient = app.get('sequelizeClient') as Sequelize;
+    const stored = await sequelizeClient.models.users.findOne({
+      where: {
+        discordId: profile.id.toString(),
+      },
+    });
+
+    if (stored) return {};
+    console.log('New user: Creating database entry');
     return {
       discordId: profile.id.toString(),
       username: profile.username,
