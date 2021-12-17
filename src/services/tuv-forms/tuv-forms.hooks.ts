@@ -4,7 +4,7 @@ import User, { UserPermissions } from '../../interfaces/user';
 import { Sequelize } from 'sequelize';
 import app from '../../app';
 import TuvFormData from '../../interfaces/tuvForms';
-import { BadRequest, Forbidden } from '@feathersjs/errors';
+import { BadRequest, FeathersError } from '@feathersjs/errors';
 // Don't remove this comment. It's needed to format import lines nicely.
 
 const { authenticate } = authentication.hooks;
@@ -49,6 +49,12 @@ const checkAccessRights = (context: HookContext) => {
   return context;
 };
 
+class VehicleError extends FeathersError {
+  constructor(message: string, data?: unknown) {
+    super(message, 'vehicle-error', 1000, 'VehicleError', data);
+  }
+}
+
 export default {
   before: {
     all: [
@@ -78,19 +84,19 @@ export default {
 
         const disallowedTires = ['race', 'mud', 'crawl', 'slick', 'sport', 'rally'];
 
-        if (vehicleParts.n2o_shot && vehicleParts.n2o_shot.length > 0) throw new Error('Vehicle may not contain a Nitrous Oxide System.');
-        if (Object.keys(vehicleParts).filter(k => k.includes('exhaust') && vehicleParts[k] === '').length !== 0) throw new Error('Vehicle has to have an exhaust.');
-        if (data.vehicleWeight < 950 && data.engineHorsepower > 200) throw new Error('Vehicle may not be under 950kg and over 200hp.');
+        if (vehicleParts.n2o_shot && vehicleParts.n2o_shot.length > 0) throw new VehicleError('Vehicle may not contain a Nitrous Oxide System.');
+        if (Object.keys(vehicleParts).filter(k => k.includes('exhaust') && vehicleParts[k] === '').length !== 0) throw new VehicleError('Vehicle has to have an exhaust.');
+        if (data.vehicleWeight < 950 && data.engineHorsepower > 200) throw new VehicleError('Vehicle may not be under 950kg and over 200hp.');
 
         Object.values(vehicleParts).forEach(p => {
-          if (p.includes('exhaust_race')) throw new Error('Vehicle may not contain a race exhaust.');
-          if (p.includes('glass_tint')) throw new Error('Vehicle may not have tinted glass.');
-          if (p.includes('light') && p.includes('covered')) throw new Error('Vehicle may not have covered lights.');
-          if (p.includes('sidepipe')) throw new Error('Vehicle may not contain sidepipes.');
+          if (p.includes('exhaust_race')) throw new VehicleError('Vehicle may not contain a race exhaust.');
+          if (p.includes('glass_tint')) throw new VehicleError('Vehicle may not have tinted glass.');
+          if (p.includes('light') && p.includes('covered')) throw new VehicleError('Vehicle may not have covered lights.');
+          if (p.includes('sidepipe')) throw new VehicleError('Vehicle may not contain sidepipes.');
 
           if (p.includes('tire')) {
             disallowedTires.forEach((tire) => {
-              if (p.includes(tire)) throw new Error(`Vehicle may not have ${tire} tires.`);
+              if (p.includes(tire)) throw new VehicleError(`Vehicle may not have ${tire} tires.`);
             });
           }
         });
