@@ -4,6 +4,7 @@ import storedForms from './stored-forms/stored-forms.service';
 import tuvForms from './tuv-forms/tuv-forms.service';
 import approveTuv from './approve-tuv/approve-tuv.service';
 import feedback from './feedback/feedback.service';
+import unbelievaBoat from './unbelieva-boat/unbelieva-boat.service';
 // Don't remove this comment. It's needed to format import lines nicely.
 
 export default function (app: Application): void {
@@ -12,4 +13,5 @@ export default function (app: Application): void {
   app.configure(tuvForms);
   app.configure(approveTuv);
   app.configure(feedback);
+  app.configure(unbelievaBoat);
 }

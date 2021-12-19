@@ -4,7 +4,7 @@ import User, { UserPermissions } from '../../interfaces/user';
 import { Sequelize } from 'sequelize';
 import app from '../../app';
 import TuvFormData from '../../interfaces/tuvForms';
-import { BadRequest, FeathersError } from '@feathersjs/errors';
+import { BadRequest, FeathersError, NotAuthenticated } from '@feathersjs/errors';
 // Don't remove this comment. It's needed to format import lines nicely.
 
 const { authenticate } = authentication.hooks;
@@ -64,7 +64,29 @@ export default {
         }
       },
     ],
-    find: [],
+    find: [
+      async (context: HookContext) => {
+        if (context.params.query && context.params.query.$count) {
+          const sequelizeClient: Sequelize | null = app.get('sequelizeClient');
+          if (!sequelizeClient) throw new Error('SequelizeClient doesnt exist.');
+
+          if (!context.params.user) throw new NotAuthenticated();
+
+          const count = await sequelizeClient.models.tuv_forms.count({
+            where: {
+              owner: (context.params.user as User).discordId,
+            }
+          });
+
+          context.result = {
+            count,
+          };
+          return context;
+        }
+
+        return context;
+      },
+    ],
     get: [],
     create: [
       checkAccessRights,
