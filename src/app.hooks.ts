@@ -1,7 +1,7 @@
 // Application hooks that run for every service
 // Don't remove this comment. It's needed to format import lines nicely.
 
-import errors from '@feathersjs/errors';
+import errors, { Conflict, FeathersError } from '@feathersjs/errors';
 import { HookContext } from '@feathersjs/feathers';
 const errorHandler = (ctx: HookContext) => {
   if (ctx.error) {
@@ -41,7 +41,11 @@ export default {
   },
 
   error: {
-    all: [],
+    all: [
+      async (context: HookContext) => {
+        console.log(context.error);
+      }
+    ],
     find: [],
     get: [],
     create: [],

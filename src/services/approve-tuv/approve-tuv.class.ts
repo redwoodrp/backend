@@ -56,7 +56,7 @@ export class ApproveTuv implements ServiceMethods<Data> {
 
     try {
       const inspector = await bot.client.users.fetch(data.inspector);
-      const buffer = await bot.generateImage({ ...formData, inspector: bot.getFullUsername(inspector) });
+      const buffer = await bot.generateTUV({ ...formData, inspector: bot.getFullUsername(inspector) });
 
       if (!fs.existsSync(`./public/images/${data.userId}`)) await fsp.mkdir(`./public/images/${data.userId}/`);
       await fsp.writeFile(`./public/images/${data.userId}/${formData.tid}.jpg`, buffer);

@@ -2,6 +2,11 @@ import { Client, Intents, Snowflake, User } from 'discord.js';
 import TuvFormData from '../interfaces/tuvForms';
 import Canvas, { registerFont } from 'canvas';
 import app from '../app';
+import DriversLicense, {
+  DriversLicenseClass,
+  DriversLicenseRequest,
+  DriversLicenseWithSignature
+} from '../interfaces/driversLicense';
 
 export default class DiscordBot {
   public client = new Client({ intents: [Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS] });
@@ -17,10 +22,6 @@ export default class DiscordBot {
     await this.client.login(this.token);
   }
 
-  public test (): void {
-    console.log('Bot test log');
-  }
-
   public calculateCategory (weight: number, wheels: number): string {
     if (weight < 3500) {
       if (wheels === 4) return 'B';
@@ -28,7 +29,7 @@ export default class DiscordBot {
     return 'B';
   }
 
-  public async generateImage (data: TuvFormData): Promise<Buffer> {
+  public async generateTUV (data: TuvFormData): Promise<Buffer> {
     // Image manipulation starts
     const background = await Canvas.loadImage('./src/bot/assets/tuv-template.jpg');
     registerFont('./src/bot/assets/NanumPenScript-Regular.ttf', { family: 'nanumpen' });
@@ -92,6 +93,61 @@ export default class DiscordBot {
     });
 
     return canvas.toBuffer('image/jpeg', { quality: 0.5, progressive: false, chromaSubsampling: true, });
+  }
+
+  public async generateDriversLicense (data: DriversLicenseWithSignature): Promise<Buffer> {
+    const user: User = await this.client.users.fetch(data.owner);
+    if (!user) throw new Error('User not found');
+
+    const background = await Canvas.loadImage('./src/bot/assets/drivers-license-template.jpg');
+
+    const regex = /^data:.+\/(.+);base64,(.*)$/;
+    const matches = data.signature.match(regex);
+    if (!matches) throw new Error('Bad signature');
+    const signature = await Canvas.loadImage(Buffer.from(matches[2], 'base64'));
+
+    registerFont('./src/bot/assets/Poppins-Medium.ttf', { family: 'poppins' });
+
+
+    const canvas = Canvas.createCanvas(background.width, background.height);
+    const ctx = canvas.getContext('2d');
+
+    ctx.font = '19px poppins'; // Issued + Instructor
+
+    ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+
+    ctx.fillText(data.issued, 464, 218);
+    ctx.fillText(data.instructor, 850, 218);
+
+    ctx.font = '22px poppins'; // table
+    ctx.textAlign = 'center';
+
+    ctx.fillText(data.discordName, 180, 523);
+
+    ctx.font = '19px poppins';
+
+    let classes = data.classes;
+    if (typeof (data.classes as string | DriversLicenseClass[]) === 'string') classes = (data.classes as unknown as string).split(',') as DriversLicenseClass[];
+    console.log('classes', classes);
+
+    ctx.fillText(classes.includes('A') ? 'Yes' : 'No', 539, 279);
+    ctx.fillText(classes.includes('A1') ? 'Yes' : 'No', 539, 279 + 32);
+    ctx.fillText(classes.includes('B') ? 'Yes' : 'No', 539, 279 + 32 * 2);
+    ctx.fillText(classes.includes('C') ? 'Yes' : 'No', 539, 279 + 32 * 3);
+    ctx.fillText(classes.includes('C1') ? 'Yes' : 'No', 539, 279 + 32 * 4);
+    ctx.fillText(classes.includes('D') ? 'Yes' : 'No', 539, 279 + 32 * 5);
+
+    ctx.drawImage(signature, 359, 509, 720, 140);
+
+    ctx.beginPath();
+    ctx.arc(181, 392, 100, 0, Math.PI * 2, true);
+    ctx.closePath();
+    ctx.clip();
+
+    const profilePicture = await Canvas.loadImage(user.displayAvatarURL({ format: 'jpeg' }));
+    ctx.drawImage(profilePicture, 81, 292, 200, 200);
+
+    return canvas.toBuffer('image/jpeg', { quality: 0.9, progressive: false, chromaSubsampling: true, });
   }
 
   public getFullUsername (user: User): string {

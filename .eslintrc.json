@@ -4,6 +4,7 @@
     "node": true,
     "mocha": true
   },
+  "ignorePatterns": ["migrations"],
   "parserOptions": {
     "parser": "@typescript-eslint/parser",
     "ecmaVersion": 2018,

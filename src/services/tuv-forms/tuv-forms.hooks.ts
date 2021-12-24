@@ -4,7 +4,8 @@ import User, { UserPermissions } from '../../interfaces/user';
 import { Sequelize } from 'sequelize';
 import app from '../../app';
 import TuvFormData from '../../interfaces/tuvForms';
-import { BadRequest, FeathersError, NotAuthenticated } from '@feathersjs/errors';
+import { BadRequest, NotAuthenticated } from '@feathersjs/errors';
+import { VehicleError } from '../../helpers/errors';
 // Don't remove this comment. It's needed to format import lines nicely.
 
 const { authenticate } = authentication.hooks;
@@ -48,12 +49,6 @@ const checkAccessRights = (context: HookContext) => {
   context.data.declineReason = form.declineReason;
   return context;
 };
-
-class VehicleError extends FeathersError {
-  constructor(message: string, data?: unknown) {
-    super(message, 'vehicle-error', 1000, 'VehicleError', data);
-  }
-}
 
 export default {
   before: {
@@ -112,7 +107,6 @@ export default {
 
         Object.values(vehicleParts).forEach(p => {
           if (p.includes('exhaust_race')) throw new VehicleError('Vehicle may not contain a race exhaust.');
-          if (p.includes('glass_tint')) throw new VehicleError('Vehicle may not have tinted glass.');
           if (p.includes('light') && p.includes('covered')) throw new VehicleError('Vehicle may not have covered lights.');
           if (p.includes('sidepipe')) throw new VehicleError('Vehicle may not contain sidepipes.');
 
