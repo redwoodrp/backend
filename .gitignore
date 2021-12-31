@@ -120,3 +120,4 @@ $RECYCLE.BIN/
 lib/
 data/
 !/config/playercount.json
+/config/playercount.json
