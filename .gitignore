@@ -1,6 +1,7 @@
 tmp-public
 
 config/local.json
+config/playercount.json
 public/*
 
 # db
@@ -118,3 +119,4 @@ $RECYCLE.BIN/
 # Others
 lib/
 data/
+!/config/playercount.json

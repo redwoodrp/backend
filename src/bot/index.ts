@@ -1,25 +1,215 @@
-import { Client, Intents, Snowflake, User } from 'discord.js';
+import Discord, { CategoryChannel, DiscordAPIError, Guild, GuildChannel, Intents, Snowflake, User } from 'discord.js';
 import TuvFormData from '../interfaces/tuvForms';
 import Canvas, { registerFont } from 'canvas';
 import app from '../app';
-import DriversLicense, {
-  DriversLicenseClass,
-  DriversLicenseRequest,
-  DriversLicenseWithSignature
-} from '../interfaces/driversLicense';
+import { DriversLicenseClass, DriversLicenseWithSignature } from '../interfaces/driversLicense';
+import axios from 'axios';
+import { ChannelTypes } from 'discord.js/typings/enums';
+import fs, { promises as fsp } from 'fs';
+import Logger from './helpers/logger';
+import { BeamMPServer, Client, PlayerCount, PlayerCountChannel, RefreshChannelInterval } from './helpers/interfaces';
+import CommandHandler from './helpers/handler';
 
 export default class DiscordBot {
-  public client = new Client({ intents: [Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS] });
+  public client = new Discord.Client({
+    intents: [
+      Intents.FLAGS.DIRECT_MESSAGES,
+      Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
+      Intents.FLAGS.GUILDS,
+      Intents.FLAGS.GUILD_MEMBERS,
+      Intents.FLAGS.GUILD_MESSAGES,
+    ],
+    partials: ['CHANNEL'],
+  }) as Client;
+  public playerCountCategory: PlayerCount | null = null;
+
   private token = app.get('discord-token');
+  private refreshChannel: RefreshChannelInterval = { refreshTime: 30_000, interval: null };
+  private guild: Guild | null = null;
+  logger = new Logger(true);
+  private commandHandler = new CommandHandler(this.client, this.logger);
 
   constructor () {
-    this.client.on('ready', () => {
-      console.log(`[DiscordBot] Logged in as ${this.client.user?.tag}!`);
+    this.client.on('ready', async () => {
+      this.logger.log(`Logged in as ${this.client.user?.tag}!`);
+      this.playerCountCategory = await this.loadPlayerCountFile();
+
+      this.client.class = this;
+
+      try {
+        this.guild = await this.client.guilds.fetch(await app.get('discord-guild'));
+
+        this.client.commands = new Discord.Collection();
+        this.commandHandler.registerAll('bot/commands').catch((err) => {
+          throw new Error(err);
+        });
+
+        this.client.on('messageCreate', (message: Discord.Message) => {
+          this.commandHandler.handle(message);
+        });
+      } catch (e) {
+        this.logger.log(e);
+        throw e;
+      }
+
+
+      // Refresh player count channels
+      // this.refreshChannel.interval = setInterval(async () => await this.refreshPlayerCount(this.refreshChannel), this.refreshChannel.refreshTime) as unknown as number;
+      // await this.refreshPlayerCount(this.refreshChannel);
     });
   }
 
+  public async loadPlayerCountFile (): Promise<PlayerCount | null> {
+    const fileName = 'playercount.json';
+    const baseDir = 'config';
+    const path = `${baseDir}/${fileName}`;
+
+    if (!fs.existsSync(path)) throw new Error(`File ${fileName} (${path}) not found!`);
+
+    try {
+      const buffer = await fsp.readFile(path);
+      if (!buffer) return null;
+
+      return JSON.parse(buffer.toString()) as PlayerCount;
+    } catch (e) {
+      this.logger.log(`Error while reading ${path}.`, e);
+      return null;
+    }
+  }
+
+  public async savePlayerCountData (data: PlayerCount): Promise<void> {
+    if (!data) return;
+
+    const fileName = 'playercount.json';
+    const baseDir = 'config';
+    const path = `${baseDir}/${fileName}`;
+
+    try {
+      await fsp.writeFile(path, JSON.stringify(data, null, 2));
+      this.playerCountCategory = data;
+    } catch (e) {
+      this.logger.log('An error occurred while trying to write to the ', fileName, 'file.', e);
+    }
+  }
+
+  public async createPlayerCountChannel (name: string, position: number, category: CategoryChannel): Promise<GuildChannel | null> {
+    if (!this.guild) return null;
+
+    return await this.guild.channels.create(name, {
+      position,
+      type: ChannelTypes.GUILD_VOICE,
+      parent: category,
+      reason: 'Created Player Count Channels',
+      topic: 'Here you can see the amount of players online on one of our servers.',
+      userLimit: 0,
+      permissionOverwrites: [{
+        id: this.guild.roles.everyone.id,
+        type: 'role',
+        deny: ['CONNECT'],
+      }]
+    });
+  }
+
+  public async refreshPlayerCount (interval?: RefreshChannelInterval): Promise<void> {
+    if (interval) this.logger.log(`Refreshing channels now. (every ${interval.refreshTime / 1000}secs)`);
+
+    try {
+      if (!this.playerCountCategory) return;
+      if (!this.guild) return;
+      const category = await this.guild.channels.fetch(this.playerCountCategory.id) as CategoryChannel;
+      if (category.type !== 'GUILD_CATEGORY') throw new Error(`Category channel is not of type GUILD_CATEGORY (!== ${category.type})`);
+
+      // Get data from BeamMP
+      const url = 'https://backend.beammp.com/servers-info';
+      const res = await axios.get(url);
+      if (!res) return;
+
+      let sortIndex = -1;
+      const servers = (res.data as BeamMPServer[]).filter(s => s.owner === 'vlad maksimenko#1337').sort(() => sortIndex++);
+      if (!servers) return;
+
+      // category.children.forEach(c => c.delete('Cleaning Player count category'));
+
+      let realIndex = -1;
+      const playerCountChannels = await Promise.all(this.playerCountCategory.channels.map(async ({
+        _comment,
+        id,
+        name,
+        port,
+        placeholder
+      }, i) => {
+        if (!this.guild) return;
+
+        if (placeholder) {
+          let channel: GuildChannel | null = null;
+          if (id) {
+            try {
+              channel = await this.guild.channels.fetch(id);
+            } catch (e) {
+              if ((e as DiscordAPIError).httpStatus === 404) {
+                channel = await this.createPlayerCountChannel(name, i, category);
+              }
+            }
+          } else channel = await this.createPlayerCountChannel(name, i, category);
+
+          if (!channel) return;
+          return {
+            id: channel.id,
+            name,
+            placeholder: true,
+          };
+        }
+
+        realIndex++;
+
+        let newName = '';
+        if (servers.length - 1 > realIndex) newName = name.replace('{p}', servers[realIndex].players);
+        else newName = 'Server unavailable';
+
+        let channel: GuildChannel | null = null;
+        if (id) {
+          try {
+            channel = await this.guild.channels.fetch(id);
+          } catch (e) {
+            if ((e as DiscordAPIError).httpStatus === 404) {
+              channel = await this.createPlayerCountChannel(newName, i, category);
+            }
+          }
+          if (!channel) return;
+
+          await channel.setName(newName);
+        } else {
+          channel = await this.createPlayerCountChannel(newName, i, category);
+        }
+
+        if (!channel) return;
+        const data = {
+          id: channel.id,
+          name,
+          port
+        } as PlayerCountChannel;
+
+        if (_comment) data._comment = _comment;
+        return data;
+      })) as PlayerCountChannel[];
+
+      if (typeof playerCountChannels === 'undefined') return;
+      await this.savePlayerCountData({
+        id: this.playerCountCategory.id,
+        channels: playerCountChannels,
+      });
+    } catch (e) {
+      this.logger.log(e);
+      throw e;
+    }
+  }
+
   public async login (): Promise<void> {
-    await this.client.login(this.token);
+    try {
+      await this.client.login(this.token);
+    } catch (e) {
+      this.logger.log('Unable to login...', e);
+    }
   }
 
   public calculateCategory (weight: number, wheels: number): string {
@@ -53,8 +243,6 @@ export default class DiscordBot {
       expiresIn: new Date((new Date(data.firstRegistry ?? '')).setMonth((new Date(data.firstRegistry ?? '')).getMonth() + 1)).toDateString(),
       category: this.calculateCategory(data.vehicleWeight, 4),
     };
-
-    console.log(vehicle.owner);
 
     const ownerUser = await this.client.users.fetch(vehicle.owner);
     vehicle.owner = this.getFullUsername(ownerUser);
@@ -128,7 +316,7 @@ export default class DiscordBot {
 
     let classes = data.classes;
     if (typeof (data.classes as string | DriversLicenseClass[]) === 'string') classes = (data.classes as unknown as string).split(',') as DriversLicenseClass[];
-    console.log('classes', classes);
+    this.logger.log('classes', classes);
 
     ctx.fillText(classes.includes('A') ? 'Yes' : 'No', 539, 279);
     ctx.fillText(classes.includes('A1') ? 'Yes' : 'No', 539, 279 + 32);
@@ -160,7 +348,7 @@ export default class DiscordBot {
       if (!user) return;
 
       await user.send(message);
-      console.log(`[DiscordBot] Message '${message}' sent to ${user.username}.`);
+      this.logger.log(`Message '${message}' sent to ${user.username}.`);
     } catch (e) {
       throw e as Error;
     }
