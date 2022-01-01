@@ -1,7 +1,7 @@
 import * as feathersAuthentication from '@feathersjs/authentication';
 import * as local from '@feathersjs/authentication-local';
 import checkPermissions from '../../helpers/hooks';
-import { UserPermissions } from '../../interfaces/user';
+import User, { StoredUser, UserPermissions } from '../../interfaces/user';
 import { HookContext } from '@feathersjs/feathers';
 import { Forbidden } from '@feathersjs/errors';
 import { disallow } from 'feathers-hooks-common';
@@ -10,21 +10,40 @@ import { disallow } from 'feathers-hooks-common';
 const { authenticate } = feathersAuthentication.hooks;
 const { hashPassword, protect } = local.hooks;
 
+const permissionStringToArray = (ctx: HookContext) => {
+  ctx.result = ctx.result as StoredUser | StoredUser[];
+
+  if (Array.isArray(ctx.result)) {
+    const converted: User[] = [];
+    ctx.result.forEach((user: StoredUser) => {
+      converted.push({
+        ...user,
+        permissions: user.permissions.split(',').map(p => parseInt(p)),
+      });
+    });
+
+    ctx.result = converted;
+    console.log('Returned permissions, ', ctx);
+    ctx.dispatch = converted;
+    return ctx;
+  }
+
+  const converted = ctx.result.permissions.split(',').map((p: string) => parseInt(p));
+
+  ctx.result.permissions = converted;
+  ctx.dispatch = converted;
+
+  return ctx;
+};
+
+const permissionArrayToString = (ctx: HookContext) => {
+  if (Array.isArray(ctx.data.permissions)) ctx.data.permissions = ctx.data.permissions.join(',');
+  return ctx;
+};
+
 export default {
   before: {
     all: [
-      // iff(
-      //   (hook: HookContext) => {
-      //     return hook.path !== 'authentication';
-      //   },
-      //   authenticate('jwt'),
-      //   checkPermissions([UserPermissions.MANAGE_USERS]),
-      //   /*
-      //   TS2345: Argument of type 'Promise<HookContext<any, Service<any>> | undefined>' is not assignable to parameter of
-      //   type 'Hook<any, Service<any>>'.   Type 'Promise<HookContext<any, Service<any>> | undefined>' provides no match for the signature
-      //   '(context: HookContext<any, Service<any>>): void | HookContext<any, Service<any>> | Promise<void | HookContext<any, Service<any>>>
-      //    */
-      // ),
       async (context: HookContext) => {
         if (context.path !== 'authentication') {
           await authenticate('jwt');
@@ -38,9 +57,9 @@ export default {
     ],
     find: [authenticate('jwt')],
     get: [],
-    create: [hashPassword('password'), disallow('external')],
-    update: [hashPassword('password'), authenticate('jwt')],
-    patch: [hashPassword('password'), authenticate('jwt')],
+    create: [hashPassword('password'), disallow('external'), permissionArrayToString],
+    update: [hashPassword('password'), authenticate('jwt'), permissionArrayToString],
+    patch: [hashPassword('password'), authenticate('jwt'), permissionArrayToString],
     remove: [authenticate('jwt')]
   },
 
@@ -50,11 +69,11 @@ export default {
       // Always must be the last hook
       protect('password')
     ],
-    find: [],
-    get: [],
-    create: [],
-    update: [],
-    patch: [],
+    find: [permissionStringToArray],
+    get: [permissionStringToArray],
+    create: [permissionStringToArray],
+    update: [permissionStringToArray],
+    patch: [permissionStringToArray],
     remove: []
   },
 

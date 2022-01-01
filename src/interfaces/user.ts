@@ -32,3 +32,7 @@ export default interface User {
   locale: string,
   permissions: UserPermissions[],
 }
+
+export interface StoredUser extends Omit<User, 'permissions'> {
+  permissions: string,
+}

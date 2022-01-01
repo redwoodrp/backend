@@ -3,9 +3,8 @@ import { AuthenticationRequest, AuthenticationService, JWTStrategy } from '@feat
 import axios, { AxiosRequestConfig } from 'axios';
 import { LocalStrategy } from '@feathersjs/authentication-local';
 import { Application } from './declarations';
-import { UserPermissions } from './interfaces/user';
-import app from './app';
-import { Sequelize } from 'sequelize';
+import User, { UserPermissions } from './interfaces/user';
+import { getDefaultPermissions } from './helpers/generic';
 
 interface Profile {
   id: number;
@@ -49,31 +48,10 @@ export class DiscordStrategy extends OAuthStrategy {
     return data;
   }
 
-  // async getRedirect (authResult: AuthenticationResult) {
-  //   const { user } = authResult;
-  //   console.log(user);
-  //   return 'http://localhost:8080/login/?access_token=success';
-  // }
+  async getEntityData (profile: Profile, existing: User | null) {
+    if (!profile.avatar) profile.avatar = 'https://cdn.discordapp.com/embed/avatars/0.png';
+    else profile.avatar = `https://cdn.discordapp.com/avatars/${profile['id']}/${profile['avatar']}.${profile.avatar.startsWith('a_') ? 'gif' : 'png'}`;
 
-  async getEntityData (profile: Profile) {
-    if (profile.avatar == null) {
-      profile.avatar = 'https://cdn.discordapp.com/embed/avatars/0.png';
-    } else {
-      const isGif = profile.avatar.startsWith('a_');
-      profile.avatar = `https://cdn.discordapp.com/avatars/${profile['id']}/${profile['avatar']}.${isGif ? 'gif' : 'png'}`;
-    }
-
-    console.log('Profile: ', profile.id);
-
-    const sequelizeClient = app.get('sequelizeClient') as Sequelize;
-    const stored = await sequelizeClient.models.users.findOne({
-      where: {
-        discordId: profile.id.toString(),
-      },
-    });
-
-    if (stored) return {};
-    console.log('New user: Creating database entry');
     return {
       discordId: profile.id.toString(),
       username: profile.username,
@@ -83,9 +61,10 @@ export class DiscordStrategy extends OAuthStrategy {
       verified: profile.verified,
       mfaEnabled: profile.mfa_enabled,
       locale: profile.locale,
-      permissions: profile.id.toString() === '414585685895282701' ?
-        [UserPermissions.ACCESS_FORM, UserPermissions.MANAGE_USERS, UserPermissions.CREATE_RESPONSE, UserPermissions.VIEW_FORM_RESPONSES, UserPermissions.MANAGE_FORM_RESPONSES]
-        : [UserPermissions.ACCESS_FORM, UserPermissions.CREATE_RESPONSE],
+      permissions: existing ?
+        existing.permissions :
+        (profile.id.toString() === '414585685895282701' ? [UserPermissions.ACCESS_FORM, UserPermissions.MANAGE_USERS, UserPermissions.CREATE_RESPONSE, UserPermissions.VIEW_FORM_RESPONSES, UserPermissions.MANAGE_FORM_RESPONSES]
+          : getDefaultPermissions()),
     };
   }
 }
