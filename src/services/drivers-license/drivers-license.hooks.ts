@@ -45,11 +45,19 @@ const checkClassDuplicates = async (context: HookContext) => {
   if (!data.signature) throw new BadRequest('signature dataURI string missing');
 
   if (!data.classes) throw new BadRequest();
-  let arr: DriversLicenseClass[] | string[] = data.classes;
-  if (typeof (data.classes as string | DriversLicenseClass[]) === 'string') arr = ((data as DriversLicense).classes as unknown as string).split(',');
 
-  if (containsDuplicates(arr)) throw new NotUnique();
+  if (containsDuplicates(data.classes)) throw new NotUnique();
   return context;
+};
+
+const classesToString = (ctx: HookContext) => {
+  ctx.data.classes = ctx.data.classes.join(',');
+  return ctx;
+};
+
+const classesToArray = (ctx: HookContext) => {
+  ctx.result.classes = ctx.result.classes.split(',');
+  return ctx;
 };
 
 export default {
@@ -57,19 +65,19 @@ export default {
     all: [authenticate('jwt')],
     find: [],
     get: [],
-    create: [checkClassDuplicates],
-    update: [checkClassDuplicates],
-    patch: [checkClassDuplicates],
+    create: [checkClassDuplicates, classesToString],
+    update: [checkClassDuplicates, classesToString],
+    patch: [checkClassDuplicates, classesToString],
     remove: []
   },
 
   after: {
     all: [],
-    find: [],
-    get: [],
-    create: [generateAndSendImage],
-    update: [generateAndSendImage],
-    patch: [generateAndSendImage],
+    find: [classesToArray],
+    get: [classesToArray],
+    create: [generateAndSendImage, classesToArray],
+    update: [generateAndSendImage, classesToArray],
+    patch: [generateAndSendImage, classesToArray],
     remove: []
   },
 

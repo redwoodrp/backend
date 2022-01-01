@@ -16,11 +16,10 @@ const checkAccessRights = (context: HookContext) => {
   const user = context.params.user as User;
 
   if (!context.params.provider) return context; // allow internal
-  const userPermissions = (user.permissions as unknown as string).split(',');
 
   let hasPermission = true;
   allowedPermissions.forEach((permission: UserPermissions) => {
-    if (!userPermissions.includes(permission.toString())) {
+    if (!user.permissions.includes(permission)) {
       hasPermission = false;
     }
   });

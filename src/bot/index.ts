@@ -315,7 +315,7 @@ export default class DiscordBot {
     ctx.font = '19px poppins';
 
     let classes = data.classes;
-    if (typeof (data.classes as string | DriversLicenseClass[]) === 'string') classes = (data.classes as unknown as string).split(',') as DriversLicenseClass[];
+    if (typeof (data.classes as string | DriversLicenseClass[]) === 'string') classes = data.classes as DriversLicenseClass[];
     this.logger.log('classes', classes);
 
     ctx.fillText(classes.includes('A') ? 'Yes' : 'No', 539, 279);

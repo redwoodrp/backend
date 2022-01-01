@@ -17,7 +17,7 @@ const checkClassDuplicates = async (context: HookContext) => {
   }) as unknown as DriversLicense | null;
   if (!entry) return context;
 
-  if (containsDuplicates((entry.classes as unknown as string).split(','))) throw new NotUnique();
+  if (containsDuplicates(entry.classes)) throw new NotUnique();
 };
 
 export default {
