@@ -7,6 +7,8 @@ import feedback from './feedback/feedback.service';
 import unbelievaBoat from './unbelieva-boat/unbelieva-boat.service';
 import driversLicense from './drivers-license/drivers-license.service';
 import driversLicenseRequest from './drivers-license-request/drivers-license-request.service';
+import business from './business/business.service';
+import businessRequest from './business-request/business-request.service';
 // Don't remove this comment. It's needed to format import lines nicely.
 
 export default function (app: Application): void {
@@ -18,4 +20,6 @@ export default function (app: Application): void {
   app.configure(unbelievaBoat);
   app.configure(driversLicense);
   app.configure(driversLicenseRequest);
+  app.configure(business);
+  app.configure(businessRequest);
 }

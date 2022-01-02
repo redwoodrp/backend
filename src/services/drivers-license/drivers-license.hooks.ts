@@ -56,6 +56,16 @@ const classesToString = (ctx: HookContext) => {
 };
 
 const classesToArray = (ctx: HookContext) => {
+  console.log('dl after cta: ', ctx);
+
+  if (Array.isArray(ctx.result)) {
+    ctx.result = ctx.result.map(r => ({
+      ...r,
+      classes: r.classes.split(','),
+    }));
+    return ctx;
+  }
+
   ctx.result.classes = ctx.result.classes.split(',');
   return ctx;
 };
