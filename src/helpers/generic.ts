@@ -5,5 +5,10 @@ export function containsDuplicates (arr: unknown[]): boolean {
 }
 
 export function getDefaultPermissions (): UserPermissions[] {
-  return [UserPermissions.ACCESS_FORM, UserPermissions.CREATE_RESPONSE];
+  return [
+    UserPermissions.ACCESS_TUV_FORM,
+    UserPermissions.ACCESS_DRIVERS_LICENSE_FORM,
+    UserPermissions.ACCESS_BUSINESS_FORM,
+    UserPermissions.ACCESS_BUSINESS,
+  ];
 }
