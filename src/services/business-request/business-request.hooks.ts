@@ -1,6 +1,8 @@
 import { authenticate } from '@feathersjs/authentication';
 import { HookContext } from '@feathersjs/feathers';
 import { BadRequest } from '@feathersjs/errors';
+import checkPermissions from '../../helpers/hooks';
+import { UserPermissions } from '../../interfaces/user';
 
 const membersArrayToString = (ctx: HookContext) => {
   if (!Array.isArray(ctx.data.members)) throw new BadRequest('members has to be type of string[]!');
@@ -20,7 +22,7 @@ const membersStringToArray = (ctx: HookContext) => {
 
 export default {
   before: {
-    all: [authenticate('jwt')],
+    all: [authenticate('jwt'), (ctx: HookContext) => checkPermissions(ctx, [UserPermissions.ACCESS_BUSINESS_FORM])],
     find: [],
     get: [],
     create: [membersArrayToString],
