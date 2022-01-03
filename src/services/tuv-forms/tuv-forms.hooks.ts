@@ -12,7 +12,7 @@ const { authenticate } = authentication.hooks;
 
 const checkAccessRights = (context: HookContext) => {
   console.log(context.params.user);
-  const allowedPermissions = [UserPermissions.MANAGE_FORM_RESPONSES];
+  const allowedPermissions = [UserPermissions.MANAGE_TUV_RESPONSES];
   const user = context.params.user as User;
 
   if (!context.params.provider) return context; // allow internal
