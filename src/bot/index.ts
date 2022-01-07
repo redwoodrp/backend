@@ -18,14 +18,17 @@ export default class DiscordBot {
       Intents.FLAGS.GUILDS,
       Intents.FLAGS.GUILD_MEMBERS,
       Intents.FLAGS.GUILD_MESSAGES,
+      Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+      Intents.FLAGS.DIRECT_MESSAGE_TYPING,
+      Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
     ],
-    partials: ['CHANNEL'],
+    partials: ['CHANNEL', 'MESSAGE', 'REACTION', 'USER', 'GUILD_MEMBER'],
   }) as Client;
   public playerCountCategory: PlayerCount | null = null;
 
   private token = app.get('discord-token');
   private refreshChannel: RefreshChannelInterval = { refreshTime: 30_000, interval: null };
-  private guild: Guild | null = null;
+  public guild: Guild | null = null;
   logger = new Logger(true);
   private commandHandler = new CommandHandler(this.client, this.logger);
 
@@ -162,7 +165,7 @@ export default class DiscordBot {
 
         realIndex++;
 
-        let newName = '';
+        let newName: string;
         if (servers.length - 1 > realIndex) newName = name.replace('{p}', servers[realIndex].players);
         else newName = 'Server unavailable';
 

@@ -47,7 +47,13 @@ try {
 }
 // Set up Plugins and providers
 app.configure(express.rest());
-app.configure(socketio());
+
+app.configure(socketio((io) => {
+  app.set('io', io);
+  io.on('connection', (socket) => {
+    app.set('socket', socket);
+  });
+}));
 
 app.configure(sequelize);
 

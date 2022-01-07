@@ -3,7 +3,7 @@ import { authenticate } from '@feathersjs/authentication';
 import app from '../../app';
 import DiscordBot from '../../bot';
 import { MessageAttachment } from 'discord.js';
-import DriversLicense, { DriversLicenseClass, DriversLicenseWithSignature } from '../../interfaces/driversLicense';
+import { DriversLicenseWithSignature } from '../../interfaces/driversLicense';
 import fs, { promises as fsp } from 'fs';
 import { containsDuplicates } from '../../helpers/generic';
 import { NotUnique } from '../../helpers/errors';
@@ -56,8 +56,6 @@ const classesToString = (ctx: HookContext) => {
 };
 
 const classesToArray = (ctx: HookContext) => {
-  console.log('dl after cta: ', ctx);
-
   if (Array.isArray(ctx.result)) {
     ctx.result = ctx.result.map(r => ({
       ...r,

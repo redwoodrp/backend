@@ -23,13 +23,18 @@ export default function (app: Application): typeof Model {
       allowNull: false,
     },
 
+    ownerId: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+
     owner: {
-      type: DataTypes.UUIDV4,
+      type: DataTypes.STRING,
       allowNull: false,
     },
 
     members: {
-      type: DataTypes.UUIDV4,
+      type: DataTypes.STRING,
       allowNull: false,
     },
   }, {

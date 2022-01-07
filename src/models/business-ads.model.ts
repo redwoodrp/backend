@@ -6,20 +6,10 @@ import { HookReturn } from 'sequelize/types/lib/hooks';
 
 export default function (app: Application): typeof Model {
   const sequelizeClient: Sequelize = app.get('sequelizeClient');
-  const businessRequest = sequelizeClient.define('business_request', {
-    name: {
+  const businessAds = sequelizeClient.define('business_ads', {
+    bid: {
       type: DataTypes.STRING,
-      allowNull: false,
-    },
-
-    abbreviation: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-
-    ownerId: {
-      type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: false
     },
 
     owner: {
@@ -27,23 +17,49 @@ export default function (app: Application): typeof Model {
       allowNull: false,
     },
 
-    members: {
+    title: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: false
     },
+
+    description: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+
+    imageSource: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+
+    positions: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+
+    to: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+
+    reviewed: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false
+    },
+
   }, {
     hooks: {
-      beforeCount(options: any): HookReturn {
+      beforeCount (options: any): HookReturn {
         options.raw = true;
       }
     }
   });
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  (businessRequest as any).associate = function (models: any): void {
+  (businessAds as any).associate = function (models: any): void {
     // Define associations here
     // See https://sequelize.org/master/manual/assocs.html
   };
 
-  return businessRequest;
+  return businessAds;
 }

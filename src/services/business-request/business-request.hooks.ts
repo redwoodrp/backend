@@ -1,24 +1,8 @@
 import { authenticate } from '@feathersjs/authentication';
 import { HookContext } from '@feathersjs/feathers';
-import { BadRequest } from '@feathersjs/errors';
 import checkPermissions from '../../helpers/hooks';
 import { UserPermissions } from '../../interfaces/user';
-
-const membersArrayToString = (ctx: HookContext) => {
-  if (!Array.isArray(ctx.data.members)) throw new BadRequest('members has to be type of string[]!');
-  ctx.data.members = ctx.data.members.join(',');
-  return ctx;
-};
-
-const membersStringToArray = (ctx: HookContext) => {
-  if (Array.isArray(ctx.result)) {
-    ctx.result = ctx.result.map(r => ({ ...r, members: r.members.split(',') }));
-    return ctx;
-  }
-
-  ctx.result.members = ctx.result.members.split(',');
-  return ctx;
-};
+import { membersArrayToString, membersStringToArray } from '../../helpers/generic';
 
 export default {
   before: {

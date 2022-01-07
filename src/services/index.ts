@@ -9,6 +9,8 @@ import driversLicense from './drivers-license/drivers-license.service';
 import driversLicenseRequest from './drivers-license-request/drivers-license-request.service';
 import business from './business/business.service';
 import businessRequest from './business-request/business-request.service';
+import businessAds from './business-ads/business-ads.service';
+import verifyPaymentAccount from './verify-payment-account/verify-payment-account.service';
 // Don't remove this comment. It's needed to format import lines nicely.
 
 export default function (app: Application): void {
@@ -22,4 +24,6 @@ export default function (app: Application): void {
   app.configure(driversLicenseRequest);
   app.configure(business);
   app.configure(businessRequest);
+  app.configure(businessAds);
+  app.configure(verifyPaymentAccount);
 }

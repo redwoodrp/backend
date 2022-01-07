@@ -23,7 +23,6 @@ const permissionStringToArray = (ctx: HookContext) => {
     });
 
     ctx.result = converted;
-    console.log('Returned permissions, ', ctx);
     ctx.dispatch = converted;
     return ctx;
   }
