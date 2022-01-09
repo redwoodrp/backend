@@ -72,7 +72,6 @@ Here is a permanent link you can use to access the TÜV online: ${app.get('front
 Have fun playing!`,
       });
 
-
       await app.service('tuv-forms')
         .patch(data.dbId, {
           checked: true,

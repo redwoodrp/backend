@@ -29,7 +29,7 @@ export default class DiscordBot {
   private token = app.get('discord-token');
   private refreshChannel: RefreshChannelInterval = { refreshTime: 30_000, interval: null };
   public guild: Guild | null = null;
-  logger = new Logger(true);
+  public logger = new Logger(true);
   private commandHandler = new CommandHandler(this.client, this.logger);
 
   constructor () {
@@ -215,13 +215,6 @@ export default class DiscordBot {
     }
   }
 
-  public calculateCategory (weight: number, wheels: number): string {
-    if (weight < 3500) {
-      if (wheels === 4) return 'B';
-    }
-    return 'B';
-  }
-
   public async generateTUV (data: TuvFormData): Promise<Buffer> {
     // Image manipulation starts
     const background = await Canvas.loadImage('./src/bot/assets/tuv-template.jpg');
@@ -237,14 +230,12 @@ export default class DiscordBot {
     interface TUVFormPrint extends TuvFormData {
       signature: string;
       expiresIn: string;
-      category: string;
     }
 
     const vehicle: TUVFormPrint = {
       ...data,
       signature: data.inspector?.split('#')[0] || 'unknown',
       expiresIn: new Date((new Date(data.firstRegistry ?? '')).setMonth((new Date(data.firstRegistry ?? '')).getMonth() + 1)).toDateString(),
-      category: this.calculateCategory(data.vehicleWeight, 4),
     };
 
     const ownerUser = await this.client.users.fetch(vehicle.owner);
@@ -259,7 +250,7 @@ export default class DiscordBot {
         ['1111', vehicle.owner, 's', 's', 's', 's', 's', vehicle.owner],
       ],
       [
-        [vehicle.bodyType, 's', 's', vehicle.vehicleWeight, 's', new Date().toDateString(), vehicle.category, 's', vehicle.engineCCM, vehicle.vehicleColor, 's', vehicle.vehicleSeatsAmount.toString()],
+        [vehicle.bodyType, 's', 's', vehicle.vehicleWeight, 's', new Date().toDateString(), vehicle.vehicleCategory, 's', vehicle.engineCCM, vehicle.vehicleColor, 's', vehicle.vehicleSeatsAmount.toString()],
         [vehicle.additionalInfos],
         [{ label: vehicle.signature, font: '70px "nanumpen"' }],
         [vehicle.engineHorsepower, 's', vehicle.fuelType],

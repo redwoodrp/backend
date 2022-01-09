@@ -58,6 +58,11 @@ export default function (app: Application): typeof Model {
       allowNull: false
     },
 
+    vehicleCategory: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+
     engineType: {
       type: DataTypes.STRING,
       allowNull: false

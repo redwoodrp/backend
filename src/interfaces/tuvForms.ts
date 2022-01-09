@@ -14,6 +14,7 @@ export default interface TuvFormData {
   firstRegistry: string | null;
   vehicleBrand: string;
   vehicleModel: string;
+  vehicleCategory: 'Car' | 'Van' | 'Bus' | 'Truck';
   engineType: string;
   engineHorsepower: number;
   engineCCM: number;

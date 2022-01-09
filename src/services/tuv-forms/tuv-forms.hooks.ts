@@ -89,14 +89,14 @@ export default {
           [key: string]: string;
         }
 
-        console.log(context);
-
         const data = context.data as TuvFormData;
         if (!data || !context.data.fileData) throw new BadRequest('fileData is required but missing!');
+        if (data.vehicleCategory.toLowerCase() === ('car' || 'van' || 'bus' || 'truck')) throw new BadRequest('vehicleCategory has to be \'car\', \'van\', \'bus\', \'truck\'');
 
         const fileData = JSON.parse(context.data.fileData);
         const vehicleParts = fileData.parts as VehicleParts;
         if (!vehicleParts) throw new Error('Corrupt file uploaded!');
+
 
         const disallowedTires = ['race', 'mud', 'crawl', 'slick', 'rally'];
 
