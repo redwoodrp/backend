@@ -3,7 +3,7 @@ import { Application } from '../../declarations';
 import DiscordBot from '../../bot';
 import { MessageAttachment, Snowflake } from 'discord.js';
 import { Model, Sequelize } from 'sequelize';
-import TuvFormData from '../../interfaces/tuvForms';
+import TuvFormData from '../../helpers/interfaces/tuvForms';
 import { BadRequest, NotFound, NotImplemented } from '@feathersjs/errors';
 import app from '../../app';
 import fs, { promises as fsp } from 'fs';

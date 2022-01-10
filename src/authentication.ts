@@ -3,7 +3,7 @@ import { AuthenticationRequest, AuthenticationService, JWTStrategy } from '@feat
 import axios, { AxiosRequestConfig } from 'axios';
 import { LocalStrategy } from '@feathersjs/authentication-local';
 import { Application } from './declarations';
-import User, { UserPermissions } from './interfaces/user';
+import User, { UserPermissions } from './helpers/interfaces/user';
 import { getDefaultPermissions } from './helpers/generic';
 
 interface Profile {

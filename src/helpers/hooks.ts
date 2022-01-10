@@ -1,5 +1,5 @@
 import { HookContext } from '@feathersjs/feathers';
-import User, { UserPermissions } from '../interfaces/user';
+import User, { UserPermissions } from './interfaces/user';
 import { Forbidden } from '@feathersjs/errors';
 
 export default function checkPermissions (context: HookContext, permissions: UserPermissions[]): HookContext {

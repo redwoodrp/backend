@@ -1,7 +1,7 @@
 import { HookContext } from '@feathersjs/feathers';
 import { authenticate } from '@feathersjs/authentication';
 import checkPermissions from '../../helpers/hooks';
-import { UserPermissions } from '../../interfaces/user';
+import { UserPermissions } from '../../helpers/interfaces/user';
 import { membersArrayToString, membersStringToArray } from '../../helpers/generic';
 
 export default {

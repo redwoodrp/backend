@@ -1,8 +1,8 @@
 import Discord, { CategoryChannel, DiscordAPIError, Guild, GuildChannel, Intents, Snowflake, User } from 'discord.js';
-import TuvFormData from '../interfaces/tuvForms';
+import TuvFormData from '../helpers/interfaces/tuvForms';
 import Canvas, { registerFont } from 'canvas';
 import app from '../app';
-import { DriversLicenseClass, DriversLicenseWithSignature } from '../interfaces/driversLicense';
+import { DriversLicenseClass, DriversLicenseWithSignature } from '../helpers/interfaces/driversLicense';
 import axios from 'axios';
 import { ChannelTypes } from 'discord.js/typings/enums';
 import fs, { promises as fsp } from 'fs';

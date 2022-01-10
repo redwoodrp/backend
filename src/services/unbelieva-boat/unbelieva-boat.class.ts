@@ -2,7 +2,7 @@ import { NullableId, Paginated, Params as DefaultParams, ServiceMethods } from '
 import { Application } from '../../declarations';
 import { BadRequest, NotFound, NotImplemented } from '@feathersjs/errors';
 import axios, { AxiosError } from 'axios';
-import User from '../../interfaces/user';
+import User from '../../helpers/interfaces/user';
 
 interface Data {
 }

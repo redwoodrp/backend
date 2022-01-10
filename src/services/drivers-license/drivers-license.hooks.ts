@@ -3,7 +3,7 @@ import { authenticate } from '@feathersjs/authentication';
 import app from '../../app';
 import DiscordBot from '../../bot';
 import { MessageAttachment } from 'discord.js';
-import { DriversLicenseWithSignature } from '../../interfaces/driversLicense';
+import { DriversLicenseWithSignature } from '../../helpers/interfaces/driversLicense';
 import fs, { promises as fsp } from 'fs';
 import { containsDuplicates } from '../../helpers/generic';
 import { NotUnique } from '../../helpers/errors';

@@ -1,7 +1,7 @@
 import * as feathersAuthentication from '@feathersjs/authentication';
 import * as local from '@feathersjs/authentication-local';
 import checkPermissions from '../../helpers/hooks';
-import User, { StoredUser, UserPermissions } from '../../interfaces/user';
+import User, { StoredUser, UserPermissions } from '../../helpers/interfaces/user';
 import { HookContext } from '@feathersjs/feathers';
 import { Forbidden } from '@feathersjs/errors';
 import { disallow } from 'feathers-hooks-common';

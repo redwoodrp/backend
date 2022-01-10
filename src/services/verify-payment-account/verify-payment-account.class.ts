@@ -3,8 +3,8 @@ import { Application } from '../../declarations';
 import { BadRequest, NotImplemented } from '@feathersjs/errors';
 import DiscordBot from '../../bot';
 import { MessageEmbed, MessageReaction, User as DiscordUser } from 'discord.js';
-import { Business } from '../../interfaces/business';
-import User from '../../interfaces/user';
+import { Business } from '../../helpers/interfaces/business';
+import User from '../../helpers/interfaces/user';
 
 interface Data {
   price: number;

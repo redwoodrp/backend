@@ -1,6 +1,6 @@
 import { HookContext, HooksObject } from '@feathersjs/feathers';
 import { authenticate } from '@feathersjs/authentication';
-import DriversLicense, { DriversLicenseRequest } from '../../interfaces/driversLicense';
+import DriversLicense, { DriversLicenseRequest } from '../../helpers/interfaces/driversLicense';
 import app from '../../app';
 import { Sequelize } from 'sequelize';
 import { containsDuplicates } from '../../helpers/generic';

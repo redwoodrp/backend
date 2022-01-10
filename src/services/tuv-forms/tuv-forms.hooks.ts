@@ -1,9 +1,9 @@
 import * as authentication from '@feathersjs/authentication';
 import { HookContext } from '@feathersjs/feathers';
-import User, { UserPermissions } from '../../interfaces/user';
+import User, { UserPermissions } from '../../helpers/interfaces/user';
 import { Sequelize } from 'sequelize';
 import app from '../../app';
-import TuvFormData from '../../interfaces/tuvForms';
+import TuvFormData from '../../helpers/interfaces/tuvForms';
 import { BadRequest, NotAuthenticated } from '@feathersjs/errors';
 import { VehicleError } from '../../helpers/errors';
 // Don't remove this comment. It's needed to format import lines nicely.

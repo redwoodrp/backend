@@ -1,4 +1,4 @@
-import { UserPermissions } from '../interfaces/user';
+import { UserPermissions } from './interfaces/user';
 import { HookContext } from '@feathersjs/feathers';
 import { BadRequest } from '@feathersjs/errors';
 
