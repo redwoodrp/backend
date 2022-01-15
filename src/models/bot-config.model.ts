@@ -13,18 +13,18 @@ export default function (app: Application): typeof Model {
     },
 
     startBalance: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false
     },
 
     commandRestrictions: {
-      type: DataTypes.STRING,
+      type: DataTypes.JSONB,
       allowNull: false
     },
 
     // Stored as follows: { channel: '#...', min: 2, max: 8 }
     chatMoney: {
-      type: DataTypes.STRING,
+      type: DataTypes.JSONB,
       allowNull: false
     },
 
@@ -34,7 +34,7 @@ export default function (app: Application): typeof Model {
 
     // { role: id, amount: 1000, cooldown: 3600 }
     moneyRoles: {
-      type: DataTypes.STRING,
+      type: DataTypes.JSONB,
       allowNull: false
     },
 
@@ -52,7 +52,7 @@ export default function (app: Application): typeof Model {
     //   [...]
     // }
     commandSettings: {
-      type: DataTypes.STRING,
+      type: DataTypes.JSONB,
       allowNull: false
     },
   }, {

@@ -8,7 +8,7 @@ export default function (app: Application): typeof Model {
   const sequelizeClient: Sequelize = app.get('sequelizeClient');
   const business = sequelizeClient.define('business', {
     bid: {
-      type: DataTypes.UUIDV4,
+      type: DataTypes.STRING,
       unique: true,
       allowNull: false,
     },
@@ -34,12 +34,12 @@ export default function (app: Application): typeof Model {
     },
 
     members: {
-      type: DataTypes.STRING,
+      type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: false,
     },
   }, {
     hooks: {
-      beforeCount(options: any): HookReturn {
+      beforeCount (options: any): HookReturn {
         options.raw = true;
       }
     }

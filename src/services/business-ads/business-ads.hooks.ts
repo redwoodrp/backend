@@ -18,42 +18,43 @@ const checkPermissions = async (ctx: HookContext) => {
   return ctx;
 };
 
-const positionsToString = (ctx: HookContext) => {
-  ctx.data.positions = ctx.data.positions.join(',');
-  return ctx;
-};
-
-const positionsToArray = (ctx: HookContext) => {
-  if (Array.isArray(ctx.result)) {
-    ctx.result = ctx.result.map(r => ({
-      ...r,
-      positions: r.positions.split(','),
-    }));
-    return ctx;
-  }
-
-  ctx.result.positions = ctx.result.positions.split(',');
-  return ctx;
-};
+// TODO: REMOVE IF SAFE
+// const positionsToString = (ctx: HookContext) => {
+//   ctx.data.positions = ctx.data.positions.join(',');
+//   return ctx;
+// };
+//
+// const positionsToArray = (ctx: HookContext) => {
+//   if (Array.isArray(ctx.result)) {
+//     ctx.result = ctx.result.map(r => ({
+//       ...r,
+//       positions: r.positions.split(','),
+//     }));
+//     return ctx;
+//   }
+//
+//   ctx.result.positions = ctx.result.positions.split(',');
+//   return ctx;
+// };
 
 export default {
   before: {
     all: [authenticate('jwt'), checkPermissions],
     find: [],
     get: [],
-    create: [positionsToString],
-    update: [positionsToString],
-    patch: [positionsToString],
+    create: [],
+    update: [],
+    patch: [],
     remove: []
   },
 
   after: {
     all: [],
-    find: [positionsToArray],
-    get: [positionsToArray],
-    create: [positionsToArray],
-    update: [positionsToArray],
-    patch: [positionsToArray],
+    find: [],
+    get: [],
+    create: [],
+    update: [],
+    patch: [],
     remove: []
   },
 

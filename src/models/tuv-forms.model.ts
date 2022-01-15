@@ -69,12 +69,12 @@ export default function (app: Application): typeof Model {
     },
 
     engineHorsepower: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false
     },
 
     engineCCM: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false
     },
 
@@ -99,12 +99,12 @@ export default function (app: Application): typeof Model {
     },
 
     vehicleWeight: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false
     },
 
     vehicleSeatsAmount: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false
     },
 
@@ -119,7 +119,7 @@ export default function (app: Application): typeof Model {
     },
 
     tid: {
-      type: DataTypes.UUIDV4,
+      type: DataTypes.STRING,
       allowNull: false
     }
   }, {

@@ -33,7 +33,7 @@ export default function (app: Application): typeof Model {
     },
 
     positions: {
-      type: DataTypes.STRING,
+      type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: false
     },
 

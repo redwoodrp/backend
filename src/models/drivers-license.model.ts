@@ -19,7 +19,7 @@ export default function (app: Application): typeof Model {
     },
 
     classes: {
-      type: DataTypes.STRING,
+      type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: false,
     },
 

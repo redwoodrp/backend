@@ -50,42 +50,43 @@ const checkClassDuplicates = async (context: HookContext) => {
   return context;
 };
 
-const classesToString = (ctx: HookContext) => {
-  ctx.data.classes = ctx.data.classes.join(',');
-  return ctx;
-};
-
-const classesToArray = (ctx: HookContext) => {
-  if (Array.isArray(ctx.result)) {
-    ctx.result = ctx.result.map(r => ({
-      ...r,
-      classes: r.classes.split(','),
-    }));
-    return ctx;
-  }
-
-  ctx.result.classes = ctx.result.classes.split(',');
-  return ctx;
-};
+// TODO: REMOVE IF SAFE
+// const classesToString = (ctx: HookContext) => {
+//   ctx.data.classes = ctx.data.classes.join(',');
+//   return ctx;
+// };
+//
+// const classesToArray = (ctx: HookContext) => {
+//   if (Array.isArray(ctx.result)) {
+//     ctx.result = ctx.result.map(r => ({
+//       ...r,
+//       classes: r.classes.split(','),
+//     }));
+//     return ctx;
+//   }
+//
+//   ctx.result.classes = ctx.result.classes.split(',');
+//   return ctx;
+// };
 
 export default {
   before: {
     all: [authenticate('jwt')],
     find: [],
     get: [],
-    create: [checkClassDuplicates, classesToString],
-    update: [checkClassDuplicates, classesToString],
-    patch: [checkClassDuplicates, classesToString],
+    create: [checkClassDuplicates],
+    update: [checkClassDuplicates],
+    patch: [checkClassDuplicates],
     remove: []
   },
 
   after: {
     all: [],
-    find: [classesToArray],
-    get: [classesToArray],
-    create: [generateAndSendImage, classesToArray],
-    update: [generateAndSendImage, classesToArray],
-    patch: [generateAndSendImage, classesToArray],
+    find: [],
+    get: [],
+    create: [generateAndSendImage],
+    update: [generateAndSendImage],
+    patch: [generateAndSendImage],
     remove: []
   },
 

@@ -1,7 +1,7 @@
 import * as feathersAuthentication from '@feathersjs/authentication';
 import * as local from '@feathersjs/authentication-local';
 import checkPermissions from '../../helpers/hooks';
-import User, { StoredUser, UserPermissions } from '../../helpers/interfaces/user';
+import { UserPermissions } from '../../helpers/interfaces/user';
 import { HookContext } from '@feathersjs/feathers';
 import { Forbidden } from '@feathersjs/errors';
 import { disallow } from 'feathers-hooks-common';
@@ -9,36 +9,36 @@ import { disallow } from 'feathers-hooks-common';
 
 const { authenticate } = feathersAuthentication.hooks;
 const { hashPassword, protect } = local.hooks;
-
-const permissionStringToArray = (ctx: HookContext) => {
-  ctx.result = ctx.result as StoredUser | StoredUser[];
-
-  if (Array.isArray(ctx.result)) {
-    const converted: User[] = [];
-    ctx.result.forEach((user: StoredUser) => {
-      converted.push({
-        ...user,
-        permissions: user.permissions.split(',').map(p => parseInt(p)),
-      });
-    });
-
-    ctx.result = converted;
-    ctx.dispatch = converted;
-    return ctx;
-  }
-
-  const converted = ctx.result.permissions.split(',').map((p: string) => parseInt(p));
-
-  ctx.result.permissions = converted;
-  ctx.dispatch = converted;
-
-  return ctx;
-};
-
-const permissionArrayToString = (ctx: HookContext) => {
-  if (Array.isArray(ctx.data.permissions)) ctx.data.permissions = ctx.data.permissions.join(',');
-  return ctx;
-};
+// TODO: REMOVE IF SAFE
+// const permissionStringToArray = (ctx: HookContext) => {
+//   ctx.result = ctx.result as StoredUser | StoredUser[];
+//
+//   if (Array.isArray(ctx.result)) {
+//     const converted: User[] = [];
+//     ctx.result.forEach((user: StoredUser) => {
+//       converted.push({
+//         ...user,
+//         permissions: user.permissions.split(',').map(p => parseInt(p)),
+//       });
+//     });
+//
+//     ctx.result = converted;
+//     ctx.dispatch = converted;
+//     return ctx;
+//   }
+//
+//   const converted = ctx.result.permissions.split(',').map((p: string) => parseInt(p));
+//
+//   ctx.result.permissions = converted;
+//   ctx.dispatch = converted;
+//
+//   return ctx;
+// };
+//
+// const permissionArrayToString = (ctx: HookContext) => {
+//   if (Array.isArray(ctx.data.permissions)) ctx.data.permissions = ctx.data.permissions.join(',');
+//   return ctx;
+// };
 
 export default {
   before: {
@@ -56,9 +56,9 @@ export default {
     ],
     find: [authenticate('jwt')],
     get: [],
-    create: [hashPassword('password'), disallow('external'), permissionArrayToString],
-    update: [hashPassword('password'), authenticate('jwt'), permissionArrayToString],
-    patch: [hashPassword('password'), authenticate('jwt'), permissionArrayToString],
+    create: [hashPassword('password'), disallow('external')],
+    update: [hashPassword('password'), authenticate('jwt')],
+    patch: [hashPassword('password'), authenticate('jwt')],
     remove: [authenticate('jwt')]
   },
 
@@ -68,11 +68,11 @@ export default {
       // Always must be the last hook
       protect('password')
     ],
-    find: [permissionStringToArray],
-    get: [permissionStringToArray],
-    create: [permissionStringToArray],
-    update: [permissionStringToArray],
-    patch: [permissionStringToArray],
+    find: [],
+    get: [],
+    create: [],
+    update: [],
+    patch: [],
     remove: []
   },
 

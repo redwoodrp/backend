@@ -28,7 +28,7 @@ export default function (app: Application): typeof Model {
     },
 
     members: {
-      type: DataTypes.STRING,
+      type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: false,
     },
   }, {

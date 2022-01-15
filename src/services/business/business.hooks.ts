@@ -2,26 +2,26 @@ import { HookContext } from '@feathersjs/feathers';
 import { authenticate } from '@feathersjs/authentication';
 import checkPermissions from '../../helpers/hooks';
 import { UserPermissions } from '../../helpers/interfaces/user';
-import { membersArrayToString, membersStringToArray } from '../../helpers/generic';
+// TODO: REMOVE IF SAFE
 
 export default {
   before: {
     all: [authenticate('jwt'),],
     find: [],
     get: [],
-    create: [(ctx: HookContext) => checkPermissions(ctx, [UserPermissions.MANAGE_BUSINESS_RESPONSES]), membersArrayToString],
-    update: [(ctx: HookContext) => checkPermissions(ctx, [UserPermissions.MANAGE_BUSINESS_RESPONSES]), membersArrayToString],
-    patch: [(ctx: HookContext) => checkPermissions(ctx, [UserPermissions.MANAGE_BUSINESS_RESPONSES]), membersArrayToString],
-    remove: [(ctx: HookContext) => checkPermissions(ctx, [UserPermissions.MANAGE_BUSINESS_RESPONSES]), membersArrayToString]
+    create: [(ctx: HookContext) => checkPermissions(ctx, [UserPermissions.MANAGE_BUSINESS_RESPONSES])],
+    update: [(ctx: HookContext) => checkPermissions(ctx, [UserPermissions.MANAGE_BUSINESS_RESPONSES])],
+    patch: [(ctx: HookContext) => checkPermissions(ctx, [UserPermissions.MANAGE_BUSINESS_RESPONSES])],
+    remove: [(ctx: HookContext) => checkPermissions(ctx, [UserPermissions.MANAGE_BUSINESS_RESPONSES])]
   },
 
   after: {
     all: [],
-    find: [membersStringToArray],
-    get: [membersStringToArray],
-    create: [membersStringToArray],
-    update: [membersStringToArray],
-    patch: [membersStringToArray],
+    find: [],
+    get: [],
+    create: [],
+    update: [],
+    patch: [],
     remove: []
   },
 

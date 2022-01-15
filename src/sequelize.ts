@@ -2,9 +2,9 @@ import { Sequelize } from 'sequelize';
 import { Application } from './declarations';
 
 export default function (app: Application): void {
-  const connectionString = app.get('sqlite');
+  const connectionString = app.get('postgres');
   const sequelize = new Sequelize(connectionString, {
-    dialect: 'sqlite',
+    dialect: 'postgres',
     logging: false,
     define: {
       freezeTableName: true

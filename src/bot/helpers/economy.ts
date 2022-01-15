@@ -1,6 +1,6 @@
-import { BotConfig, Client, CommandLastExecuted, NullableWallet, Wallet } from './interfaces';
+import { BotConfig, CommandLastExecuted, NullableWallet, Wallet } from './interfaces';
 import app from '../../app';
-import { MessageEmbed, Snowflake } from 'discord.js';
+import { Snowflake } from 'discord.js';
 import { getBotConfig } from './generic';
 
 /**
@@ -102,16 +102,11 @@ export async function getCoolDownStatus (commandName: string, userId: Snowflake,
   }) as CommandLastExecuted[]);
 
   if (lastExecutedEntries.length >= 1) {
-    const lastExec = new Date(lastExecutedEntries[0].lastExecuted);
-    const now = new Date();
+    const cmdSettings = guildConfig.commandSettings[commandName as 'crime'];
+    if (!cmdSettings) throw new Error('guildconfig err');
 
-    if (!guildConfig.commandSettings[commandName as 'crime']) throw new Error('guildconfig err');
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const withCoolDown = lastExec.getTime() + 1000 * guildConfig.commandSettings[commandName as 'crime'].cooldown;
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    console.log(lastExec.getTime(), 1000 * guildConfig.commandSettings[commandName as 'crime'].cooldown, now.getTime());
+    const now = new Date();
+    const withCoolDown = new Date(lastExecutedEntries[0].lastExecuted).getTime() + 1000 * cmdSettings.cooldown;
     if (withCoolDown > now.getTime()) {
       return {
         active: true,

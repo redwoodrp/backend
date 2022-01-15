@@ -1,6 +1,5 @@
 import { Application } from '../declarations';
 import users from './users/users.service';
-import storedForms from './stored-forms/stored-forms.service';
 import tuvForms from './tuv-forms/tuv-forms.service';
 import approveTuv from './approve-tuv/approve-tuv.service';
 import feedback from './feedback/feedback.service';
@@ -18,7 +17,6 @@ import discordLastExecuted from './discord-last-executed/discord-last-executed.s
 
 export default function (app: Application): void {
   app.configure(users);
-  app.configure(storedForms);
   app.configure(tuvForms);
   app.configure(approveTuv);
   app.configure(feedback);
