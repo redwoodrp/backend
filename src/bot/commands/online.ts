@@ -5,8 +5,8 @@ import axios from 'axios';
 export const command: Command = {
   name: 'online',
   description: 'Reset the player count category values',
-  guildOnly: true,
-  devOnly: true,
+  // guildOnly: true,
+  // devOnly: true,
   aliases: ['players'],
   async run (client, message) {
     const previous = await message.channel.send(emoji('loading'));

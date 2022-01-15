@@ -11,6 +11,9 @@ import business from './business/business.service';
 import businessRequest from './business-request/business-request.service';
 import businessAds from './business-ads/business-ads.service';
 import verifyPaymentAccount from './verify-payment-account/verify-payment-account.service';
+import wallet from './wallet/wallet.service';
+import botConfig from './bot-config/bot-config.service';
+import discordLastExecuted from './discord-last-executed/discord-last-executed.service';
 // Don't remove this comment. It's needed to format import lines nicely.
 
 export default function (app: Application): void {
@@ -26,4 +29,7 @@ export default function (app: Application): void {
   app.configure(businessRequest);
   app.configure(businessAds);
   app.configure(verifyPaymentAccount);
+  app.configure(wallet);
+  app.configure(botConfig);
+  app.configure(discordLastExecuted);
 }

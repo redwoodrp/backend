@@ -25,11 +25,11 @@ export default class DiscordBot {
     partials: ['CHANNEL', 'MESSAGE', 'REACTION', 'USER', 'GUILD_MEMBER'],
   }) as Client;
   public playerCountCategory: PlayerCount | null = null;
+  public guild: Guild | null = null;
+  public logger = new Logger(true);
 
   private token = app.get('discord-token');
   private refreshChannel: RefreshChannelInterval = { refreshTime: 30_000, interval: null };
-  public guild: Guild | null = null;
-  public logger = new Logger(true);
   private commandHandler = new CommandHandler(this.client, this.logger);
 
   constructor () {
@@ -47,8 +47,8 @@ export default class DiscordBot {
           throw new Error(err);
         });
 
-        this.client.on('messageCreate', (message: Discord.Message) => {
-          this.commandHandler.handle(message);
+        this.client.on('messageCreate', async (message: Discord.Message) => {
+          await this.commandHandler.handle(message);
         });
       } catch (e) {
         this.logger.log(e);

@@ -31,6 +31,6 @@ promise.then(() => {
   });
 });
 
-process.on('unhandledRejection', (reason, p) =>
-  logger.error('Unhandled Rejection at: Promise ', p, reason)
-);
+// process.on('unhandledRejection', (reason, p) =>
+//   logger.error('Unhandled Rejection at: Promise ', p, reason)
+// );
