@@ -91,7 +91,8 @@ export default {
 
         const data = context.data as TuvFormData;
         if (!data || !context.data.fileData) throw new BadRequest('fileData is required but missing!');
-        if (data.vehicleCategory.toLowerCase() === ('car' || 'van' || 'bus' || 'truck')) throw new BadRequest('vehicleCategory has to be \'car\', \'van\', \'bus\', \'truck\'');
+        if (!data.vehicleCategory) throw new BadRequest('vehicleCategory missing');
+        if (!['car', 'van', 'bus', 'truck'].includes(data.vehicleCategory.toLowerCase())) throw new BadRequest('vehicleCategory has to be \'car\', \'van\', \'bus\', \'truck\'');
 
         const fileData = JSON.parse(context.data.fileData);
         const vehicleParts = fileData.parts as VehicleParts;

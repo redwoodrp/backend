@@ -40,7 +40,7 @@ export default function (app: Application): typeof Model {
     },
 
     permissions: {
-      type: DataTypes.ARRAY(DataTypes.NUMBER),
+      type: DataTypes.ARRAY(DataTypes.INTEGER),
       allowNull: false,
     }
   }, {
