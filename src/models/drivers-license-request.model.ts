@@ -34,7 +34,7 @@ export default function (app: Application): typeof Model {
     },
 
     signature: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(100_000),
       allowNull: false,
     },
   }, {
