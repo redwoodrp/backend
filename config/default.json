@@ -3,13 +3,17 @@
   "port": 3030,
   "public": "../public/",
   "paginate": false,
-  "oauth": {
-    "discord": {
-      "scope": [
-        "identify",
-        "email"
-      ],
-      "prompt": "none"
+  "authentication": {
+    "oauth": {
+      "discord": {
+        "scope": [
+          "identify",
+          "email"
+        ],
+        "custom_params": {
+          "prompt": "none"
+        }
+      }
     }
   }
 }
