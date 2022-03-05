@@ -71,13 +71,13 @@ const checkClassDuplicates = async (context: HookContext) => {
 
 export default {
   before: {
-    all: [authenticate('jwt')],
+    all: [],
     find: [],
     get: [],
-    create: [checkClassDuplicates],
-    update: [checkClassDuplicates],
-    patch: [checkClassDuplicates],
-    remove: []
+    create: [authenticate('jwt'), checkClassDuplicates],
+    update: [authenticate('jwt'), checkClassDuplicates],
+    patch: [authenticate('jwt'), checkClassDuplicates],
+    remove: [authenticate('jwt')]
   },
 
   after: {
