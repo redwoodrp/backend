@@ -101,7 +101,7 @@ export default {
 
         const disallowedTires = ['race', 'mud', 'crawl', 'slick', 'rally'];
 
-        if (vehicleParts.n2o_shot && vehicleParts.n2o_shot.length > 0) throw new VehicleError('Vehicle may not contain a Nitrous Oxide System.');
+        if (vehicleParts.n2o_system && vehicleParts.n2o_system.length > 0) throw new VehicleError('Vehicle may not contain a Nitrous Oxide System.');
         if (Object.keys(vehicleParts).filter(k => k.includes('exhaust') && vehicleParts[k] === '').length !== 0) throw new VehicleError('Vehicle has to have an exhaust.');
         if (data.vehicleWeight < 950 && data.engineHorsepower > 200) throw new VehicleError('Vehicle may not be under 950kg and over 200hp.');
 
