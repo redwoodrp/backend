@@ -6,7 +6,7 @@ export const command: Command = {
   name: 'help',
   description: 'Shows what you are seeing right now.',
   usage: 'help <command>',
-  async run (client, message, args) {
+  async run(client, message, args) {
     const embed = new Discord.MessageEmbed()
       .setColor(getEmbedColor(client))
       .setTitle(':gear: Help')

@@ -20,7 +20,7 @@ export const command: Command = {
       spread: true,
     },
   ],
-  async run (client, message, args) {
+  async run(client, message, args) {
     const user = args[0].value as unknown as User;
     const guildConfig = await getBotConfig(message.guildId || '');
 

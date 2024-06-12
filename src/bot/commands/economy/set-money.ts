@@ -27,7 +27,7 @@ export const command: Command = {
       spread: true,
     },
   ],
-  async run (client, message, args) {
+  async run(client, message, args) {
     const user = args[0].value as unknown as User;
     if (args[1].type !== CommandArgument.STRING) return;
     if (args[2].type !== CommandArgument.NUMBER) return;

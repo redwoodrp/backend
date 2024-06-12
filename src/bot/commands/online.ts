@@ -8,7 +8,7 @@ export const command: Command = {
   // guildOnly: true,
   // devOnly: true,
   aliases: ['players'],
-  async run (client, message) {
+  async run(client, message) {
     const previous = await message.channel.send(emoji('loading'));
 
     // Get data from BeamMP

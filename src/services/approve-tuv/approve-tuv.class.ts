@@ -18,26 +18,30 @@ export class ApproveTuv implements ServiceMethods<Data> {
   app: Application;
   options: ServiceOptions;
 
-  constructor (options: ServiceOptions = {}, app: Application) {
+  constructor(options: ServiceOptions = {}, app: Application) {
     this.options = options;
     this.app = app;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async find (params?: Params): Promise<Data[] | Paginated<Data>> {
+  async find(params?: Params): Promise<Data[] | Paginated<Data>> {
     throw new NotImplemented();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async get (id: Id, params?: Params): Promise<Data> {
+  async get(id: Id, params?: Params): Promise<Data> {
     return {
       id, text: `A new message with ID: ${id}!`
     };
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async create (rawData: Data, params?: Params): Promise<Data> {
-    const data: { userId: Snowflake, dbId: number, inspector: Snowflake, } = rawData as { userId: Snowflake, dbId: number, inspector: Snowflake };
+  async create(rawData: Data, params?: Params): Promise<Data> {
+    const data: { userId: Snowflake, dbId: number, inspector: Snowflake, } = rawData as {
+      userId: Snowflake,
+      dbId: number,
+      inspector: Snowflake
+    };
     if (!data.userId && !data.dbId) throw new BadRequest();
 
     const bot: DiscordBot = this.app.get('discordBot');
@@ -88,17 +92,17 @@ Have fun playing!`,
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async update (id: NullableId, data: Data, params?: Params): Promise<Data> {
+  async update(id: NullableId, data: Data, params?: Params): Promise<Data> {
     throw new NotImplemented();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async patch (id: NullableId, data: Data, params?: Params): Promise<Data> {
+  async patch(id: NullableId, data: Data, params?: Params): Promise<Data> {
     throw new NotImplemented();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async remove (id: Id, params?: Params): Promise<Data> {
+  async remove(id: Id, params?: Params): Promise<Data> {
     // decline
     interface QueryParams {
       inspector: Snowflake;

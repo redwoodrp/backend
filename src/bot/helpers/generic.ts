@@ -2,7 +2,7 @@ import { Snowflake } from 'discord.js';
 import { BotConfig } from './interfaces';
 import app from '../../app';
 
-export async function getBotConfig (guild: Snowflake): Promise<BotConfig> {
+export async function getBotConfig(guild: Snowflake): Promise<BotConfig> {
   const query = {
     $limit: 1,
     guildId: guild,

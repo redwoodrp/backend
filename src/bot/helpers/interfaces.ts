@@ -190,7 +190,7 @@ export interface SlutCommandSettings {
   };
 }
 
-export interface CommandLastExecuted extends BaseDB{
+export interface CommandLastExecuted extends BaseDB {
   user: string;
   command: string;
   lastExecuted: string;

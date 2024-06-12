@@ -11,7 +11,7 @@ let promise = Promise.resolve();
 Object.keys(app.services).forEach(path => {
   const { init } = (app.service(path) as Service<any>);
 
-  if(typeof init === 'function') {
+  if (typeof init === 'function') {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     promise = promise.then(() => init());

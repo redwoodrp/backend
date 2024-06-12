@@ -6,8 +6,8 @@ export class VehicleError extends FeathersError {
   }
 }
 
-export class NotUnique extends  FeathersError {
-  constructor (message = 'Cannot contain duplicates!', data?: unknown) {
+export class NotUnique extends FeathersError {
+  constructor(message = 'Cannot contain duplicates!', data?: unknown) {
     super(message, 'not-unique', 1001, 'NotUnique', data);
   }
 }

@@ -10,7 +10,7 @@ export const command: Command = {
   description: 'Earn some money.',
   guildOnly: true,
   args: [],
-  async run (client, message, args) {
+  async run(client, message, args) {
     const guildConfig = await getBotConfig(message.guildId || '');
     const workSettingsExist = Object.prototype.hasOwnProperty.call(guildConfig.commandSettings, 'work');
     if (!workSettingsExist) {

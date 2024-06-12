@@ -10,7 +10,7 @@ export const command: Command = {
   description: 'Commit a crime. But be careful: You can be fined!',
   guildOnly: true,
   args: [],
-  async run (client, message, args) {
+  async run(client, message, args) {
     const guildConfig = await getBotConfig(message.guildId || '');
     const crimeSettingsExist = Object.prototype.hasOwnProperty.call(guildConfig.commandSettings, 'crime');
     if (!crimeSettingsExist) {

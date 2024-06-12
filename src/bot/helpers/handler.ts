@@ -8,7 +8,7 @@ export default class CommandHandler {
   private readonly client: Client | null = null;
   private readonly logger: Logger | null = null;
 
-  constructor (client: Client, logger: Logger) {
+  constructor(client: Client, logger: Logger) {
     this.client = client;
     this.logger = logger;
   }
@@ -18,7 +18,7 @@ export default class CommandHandler {
    * -
    * Returns a promise (error, void)
    */
-  public registerAll (path: string, prepend = 'src', ext = '.ts'): Promise<Error | void> {
+  public registerAll(path: string, prepend = 'src', ext = '.ts'): Promise<Error | void> {
     return new Promise((resolve, reject) => {
       this.register(path, prepend, ext).then(() => {
         this.registerSub(path, prepend).then(() => {
@@ -37,7 +37,7 @@ export default class CommandHandler {
    * -
    * Returns a promise (error, void)
    */
-  public registerSub (path: string, prepend = 'src'): Promise<Error | void> {
+  public registerSub(path: string, prepend = 'src'): Promise<Error | void> {
     return new Promise((resolve, reject) => {
       fsp.readdir(`./${prepend}/${path}`).then((files: Array<string>) => {
         files.map(async (folder) => {
@@ -57,7 +57,7 @@ export default class CommandHandler {
    * -
    * Returns a promise (error, void)
    */
-  public register (path: string, prepend = 'src', ext = '.ts'): Promise<Error | void> {
+  public register(path: string, prepend = 'src', ext = '.ts'): Promise<Error | void> {
     return new Promise((resolve, reject) => {
       fsp.readdir(`./${prepend}/${path}`).then((files: Array<string>) => {
         files.map((file) => {
@@ -83,7 +83,7 @@ export default class CommandHandler {
    * -
    * Handle a message, run the command
    */
-  public async handle (message: Message): Promise<void> {
+  public async handle(message: Message): Promise<void> {
     if (!this.client) return;
     if (!this.logger) return;
 
@@ -147,7 +147,7 @@ export default class CommandHandler {
     }
   }
 
-  private async checkCommand (cmd: Command, message: Message, args: string[]): Promise<unknown | null> {
+  private async checkCommand(cmd: Command, message: Message, args: string[]): Promise<unknown | null> {
     if (message.author.bot) return false;
 
     if (cmd.guildOnly && message.channel.type === 'DM') {
@@ -190,7 +190,7 @@ export default class CommandHandler {
     return !(cmd.devOnly && !getDevs().includes(message.author.id));
   }
 
-  private async getCommandArgs (cmd: Command, message: Message, args: string[]): Promise<ParsedArgument[] | string> {
+  private async getCommandArgs(cmd: Command, message: Message, args: string[]): Promise<ParsedArgument[] | string> {
     if (cmd.args) {
       let failed: null | string = null;
       const parsedArgs: ParsedArgument[] = [];
@@ -286,7 +286,7 @@ export default class CommandHandler {
     return [];
   }
 
-  private getCommandUsage (cmd: Command): string {
+  private getCommandUsage(cmd: Command): string {
     if (!cmd.args) return '';
     return cmd.args.map(a => {
       let n = a.name;

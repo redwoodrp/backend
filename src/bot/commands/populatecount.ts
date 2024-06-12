@@ -7,7 +7,7 @@ export const command: Command = {
   guildOnly: true,
   devOnly: true,
   aliases: ['populateplayers'],
-  async run (client, message) {
+  async run(client, message) {
     const before = await message.channel.send(emoji('loading'));
 
     if (!client.class) return;

@@ -20,7 +20,7 @@ export const command: Command = {
       name: 'cooldown',
     },
   ],
-  async run (client, message, args) {
+  async run(client, message, args) {
     console.log(args);
 
     const role = args[0].value as Role;

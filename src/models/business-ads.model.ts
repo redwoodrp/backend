@@ -49,7 +49,7 @@ export default function (app: Application): typeof Model {
 
   }, {
     hooks: {
-      beforeCount (options: any): HookReturn {
+      beforeCount(options: any): HookReturn {
         options.raw = true;
       }
     }

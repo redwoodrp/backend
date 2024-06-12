@@ -4,7 +4,9 @@
     "node": true,
     "mocha": true
   },
-  "ignorePatterns": ["migrations"],
+  "ignorePatterns": [
+    "migrations"
+  ],
   "parserOptions": {
     "parser": "@typescript-eslint/parser",
     "ecmaVersion": 2018,
@@ -30,7 +32,9 @@
       "single"
     ],
     "semi": "off",
-    "@typescript-eslint/semi": ["error"],
+    "@typescript-eslint/semi": [
+      "error"
+    ],
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-empty-interface": "off"
   }

@@ -13,7 +13,7 @@ export const command: Command = {
       name: 'amount',
     }
   ],
-  async run (client, message, args) {
+  async run(client, message, args) {
     const amount = args[0].value as unknown as number;
     if (amount <= 0) {
       const embed = new MessageEmbed({

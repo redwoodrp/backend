@@ -35,7 +35,7 @@ export default function (app: Application) {
 }
 
 export class DiscordStrategy extends OAuthStrategy {
-  async getProfile (authResult: AuthenticationRequest) {
+  async getProfile(authResult: AuthenticationRequest) {
     // This is the OAuth access token that can be used
     // for Discord API requests as the Bearer token
     const accessToken = authResult.access_token;
@@ -48,7 +48,7 @@ export class DiscordStrategy extends OAuthStrategy {
     return data;
   }
 
-  async getEntityData (profile: Profile, existing: User | null) {
+  async getEntityData(profile: Profile, existing: User | null) {
     if (!profile.avatar) profile.avatar = 'https://cdn.discordapp.com/embed/avatars/0.png';
     else profile.avatar = `https://cdn.discordapp.com/avatars/${profile['id']}/${profile['avatar']}.${profile.avatar.startsWith('a_') ? 'gif' : 'png'}`;
 

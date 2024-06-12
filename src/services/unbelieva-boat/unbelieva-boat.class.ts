@@ -36,7 +36,7 @@ export class UnbelievaBoat implements ServiceMethods<Data> {
   baseURI: string;
   cachesValues: UnbelievaCache;
 
-  constructor (options: ServiceOptions = {}, app: Application) {
+  constructor(options: ServiceOptions = {}, app: Application) {
     this.options = options;
     this.app = app;
     this.token = app.get('unbelieva-token');
@@ -45,12 +45,12 @@ export class UnbelievaBoat implements ServiceMethods<Data> {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async find (params?: Params): Promise<Data[] | Paginated<Data>> {
+  async find(params?: Params): Promise<Data[] | Paginated<Data>> {
     throw new NotImplemented();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async get (id: NullableId, params?: Params): Promise<ApiResponse> {
+  async get(id: NullableId, params?: Params): Promise<ApiResponse> {
     if (!this.token) this.token = await this.app.get('unbelieva-token');
 
     if (!params?.query) throw new BadRequest();
@@ -72,22 +72,22 @@ export class UnbelievaBoat implements ServiceMethods<Data> {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async create (data: Data, params?: Params): Promise<Data> {
+  async create(data: Data, params?: Params): Promise<Data> {
     throw new NotImplemented();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async update (id: NullableId, data: Data, params?: Params): Promise<Data> {
+  async update(id: NullableId, data: Data, params?: Params): Promise<Data> {
     throw new NotImplemented();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async patch (id: NullableId, data: Data, params?: Params): Promise<Data> {
+  async patch(id: NullableId, data: Data, params?: Params): Promise<Data> {
     throw new NotImplemented();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async remove (id: NullableId, params?: Params): Promise<Data> {
+  async remove(id: NullableId, params?: Params): Promise<Data> {
     throw new NotImplemented();
   }
 }

@@ -21,7 +21,7 @@ export const command: Command = {
       optional: true,
     }
   ],
-  async run (client, message, args) {
+  async run(client, message, args) {
     const to = args[0].value as User;
     if (to.id === message.author.id) {
       const embed = new MessageEmbed({

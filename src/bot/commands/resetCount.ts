@@ -7,7 +7,7 @@ export const command: Command = {
   guildOnly: true,
   devOnly: true,
   aliases: ['resetplayers'],
-  async run (client, message) {
+  async run(client, message) {
     message.channel.send('Flushing channel...');
 
     if (!client.class.playerCountCategory) return;

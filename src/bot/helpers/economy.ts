@@ -7,7 +7,7 @@ import { getBotConfig } from './generic';
  * Get a wallet out of the db
  * @param user the user the wallet belongs to. Can be multiple users!
  */
-export async function getWallet (user: string | string[]): Promise<Wallet[]> {
+export async function getWallet(user: string | string[]): Promise<Wallet[]> {
   const users = Array.isArray(user) ? user : [user];
 
   const storedWallets = await app.service('wallet').find({
@@ -34,7 +34,7 @@ export async function getWallet (user: string | string[]): Promise<Wallet[]> {
  * @param user user/s to get/create the wallets for/from
  * @param guildId id of the guild
  */
-export async function getAndCreateWallet (user: string | string[], guildId: Snowflake): Promise<Wallet[]> {
+export async function getAndCreateWallet(user: string | string[], guildId: Snowflake): Promise<Wallet[]> {
   const users = Array.isArray(user) ? user : [user];
   const guildConfig = await getBotConfig(guildId);
   const storedWallets: Wallet[] = await getWallet(users);
@@ -59,7 +59,7 @@ export async function getAndCreateWallet (user: string | string[], guildId: Snow
  * Add th, rd, st or nd to a number
  * @param num
  */
-export function makeOrdinal (num: number): string {
+export function makeOrdinal(num: number): string {
   const n = num.toString();
 
   if (n.endsWith('11') || n.endsWith('12') || n.endsWith('13')) return `${n}th`;
@@ -71,7 +71,7 @@ export function makeOrdinal (num: number): string {
 }
 
 
-export function numberToCashString (num: number): string {
+export function numberToCashString(num: number): string {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -80,7 +80,7 @@ export function numberToCashString (num: number): string {
   }).format(num);
 }
 
-export async function changeBalance (changeBank: boolean, amount: number, userId: Snowflake, guildId: Snowflake): Promise<void> {
+export async function changeBalance(changeBank: boolean, amount: number, userId: Snowflake, guildId: Snowflake): Promise<void> {
   const wallet: Wallet = (await getAndCreateWallet(userId, guildId))[0];
   if (!wallet) return;
 
@@ -93,7 +93,10 @@ export async function changeBalance (changeBank: boolean, amount: number, userId
   await app.service('wallet').patch(wallet.id || -1, data);
 }
 
-export async function getCoolDownStatus (commandName: string, userId: Snowflake, guildConfig: BotConfig, removeEntries = true): Promise<{ active: boolean, expires: number | null }> {
+export async function getCoolDownStatus(commandName: string, userId: Snowflake, guildConfig: BotConfig, removeEntries = true): Promise<{
+  active: boolean,
+  expires: number | null
+}> {
   const lastExecutedEntries = (await app.service('discord-last-executed').find({
     query: {
       user: userId,

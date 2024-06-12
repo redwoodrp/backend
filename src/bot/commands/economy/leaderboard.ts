@@ -9,7 +9,7 @@ export const command: Command = {
   aliases: ['lb'],
   guildOnly: true,
   args: [],
-  async run (client, message, args) {
+  async run(client, message, args) {
     const wallets = await app.service('wallet').find({
       query: {
         $select: ['user', 'total'],

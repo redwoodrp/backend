@@ -7,7 +7,7 @@ export const command: Command = {
   name: 'collect',
   description: 'Collect all the money from your roles',
   args: [],
-  async run (client, message) {
+  async run(client, message) {
     const guildConfig = await getBotConfig(message.guildId || '');
 
     const formattedRoles = [];

@@ -2,7 +2,7 @@ import { authenticate } from '@feathersjs/authentication';
 
 export default {
   before: {
-    all: [ authenticate('jwt') ],
+    all: [authenticate('jwt')],
     find: [],
     get: [],
     create: [],

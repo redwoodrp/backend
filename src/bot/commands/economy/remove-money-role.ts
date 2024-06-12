@@ -12,7 +12,7 @@ export const command: Command = {
       name: 'role',
     },
   ],
-  async run (client, message, args) {
+  async run(client, message, args) {
     const role = args[0].value as Role;
 
     const guildConfig = await getBotConfig(message.guildId || '');

@@ -1,4 +1,4 @@
-import { Service, SequelizeServiceOptions } from 'feathers-sequelize';
+import { SequelizeServiceOptions, Service } from 'feathers-sequelize';
 import { Application } from '../../declarations';
 
 export class DriversLicenseRequest extends Service {

@@ -12,7 +12,7 @@ export const command: Command = {
     name: 'user',
     optional: true,
   }],
-  async run (client, message, args) {
+  async run(client, message, args) {
     const user = args.length === 0 ? message.author : args[0].value as unknown as User;
     const wallet = (await getAndCreateWallet(user.id, message.guildId || ''))[0];
 

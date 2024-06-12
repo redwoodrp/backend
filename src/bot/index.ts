@@ -32,7 +32,7 @@ export default class DiscordBot {
   private refreshChannel: RefreshChannelInterval = { refreshTime: 30_000, interval: null };
   private commandHandler = new CommandHandler(this.client, this.logger);
 
-  constructor () {
+  constructor() {
     this.client.on('ready', async () => {
       this.logger.log(`Logged in as ${this.client.user?.tag}!`);
       this.playerCountCategory = await this.loadPlayerCountFile();
@@ -62,7 +62,7 @@ export default class DiscordBot {
     });
   }
 
-  public async loadPlayerCountFile (): Promise<PlayerCount | null> {
+  public async loadPlayerCountFile(): Promise<PlayerCount | null> {
     const fileName = 'playercount.json';
     const baseDir = 'config';
     const path = `${baseDir}/${fileName}`;
@@ -80,7 +80,7 @@ export default class DiscordBot {
     }
   }
 
-  public async savePlayerCountData (data: PlayerCount): Promise<void> {
+  public async savePlayerCountData(data: PlayerCount): Promise<void> {
     if (!data) return;
 
     const fileName = 'playercount.json';
@@ -95,7 +95,7 @@ export default class DiscordBot {
     }
   }
 
-  public async createPlayerCountChannel (name: string, position: number, category: CategoryChannel): Promise<GuildChannel | null> {
+  public async createPlayerCountChannel(name: string, position: number, category: CategoryChannel): Promise<GuildChannel | null> {
     if (!this.guild) return null;
 
     return await this.guild.channels.create(name, {
@@ -113,7 +113,7 @@ export default class DiscordBot {
     });
   }
 
-  public async refreshPlayerCount (interval?: RefreshChannelInterval): Promise<void> {
+  public async refreshPlayerCount(interval?: RefreshChannelInterval): Promise<void> {
     if (interval) this.logger.log(`Refreshing channels now. (every ${interval.refreshTime / 1000}secs)`);
 
     try {
@@ -207,7 +207,7 @@ export default class DiscordBot {
     }
   }
 
-  public async login (): Promise<void> {
+  public async login(): Promise<void> {
     try {
       await this.client.login(this.token);
     } catch (e) {
@@ -215,7 +215,7 @@ export default class DiscordBot {
     }
   }
 
-  public async generateTUV (data: TuvFormData): Promise<Buffer> {
+  public async generateTUV(data: TuvFormData): Promise<Buffer> {
     // Image manipulation starts
     const background = await Canvas.loadImage('./src/bot/assets/tuv-template.jpg');
     registerFont('./src/bot/assets/NanumPenScript-Regular.ttf', { family: 'nanumpen' });
@@ -277,7 +277,7 @@ export default class DiscordBot {
     return canvas.toBuffer('image/jpeg', { quality: 0.5, progressive: false, chromaSubsampling: true, });
   }
 
-  public async generateDriversLicense (data: DriversLicenseWithSignature): Promise<Buffer> {
+  public async generateDriversLicense(data: DriversLicenseWithSignature): Promise<Buffer> {
     const user: User = await this.client.users.fetch(data.owner);
     if (!user) throw new Error('User not found');
 
@@ -332,11 +332,11 @@ export default class DiscordBot {
     return canvas.toBuffer('image/jpeg', { quality: 0.9, progressive: false, chromaSubsampling: true, });
   }
 
-  public getFullUsername (user: User): string {
+  public getFullUsername(user: User): string {
     return `${user.username}#${user.discriminator}`;
   }
 
-  public async sendMessage (userId: Snowflake, message: string): Promise<void> {
+  public async sendMessage(userId: Snowflake, message: string): Promise<void> {
     try {
       const user = await this.client.users.fetch(userId);
       if (!user) return;
