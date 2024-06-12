@@ -21,7 +21,7 @@ export const command: Command = {
         if (args.length !== 0) {
           if (!c.aliases) c.aliases = [];
 
-          if (args[0].toLowerCase() === c.name || c.aliases.includes(args[0].toLowerCase())) {
+          if ((args[0].value as string).toLowerCase() === c.name || c.aliases.includes((args[0].value as string).toLowerCase())) {
             if (c.aliases == null) c.aliases = ['none'];
             embed.addField('Name', `\`\`\`\n${getPrefixes()[0]}${c.name} ${c.usage}\`\`\``, true)
               .addField('Description', `\`\`\`\n${c.description}\`\`\``)
