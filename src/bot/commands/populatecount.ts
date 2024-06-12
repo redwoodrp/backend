@@ -13,6 +13,6 @@ export const command: Command = {
     if (!client.class) return;
     await client.class.refreshPlayerCount();
 
-    before.edit('Done :white_check_mark:');
+    await before.edit('Done :white_check_mark:');
   },
 };

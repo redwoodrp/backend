@@ -1,4 +1,13 @@
-import Discord, { CategoryChannel, DiscordAPIError, Guild, GuildChannel, Intents, Snowflake, User } from 'discord.js';
+import Discord, {
+  CategoryChannel,
+  DiscordAPIError,
+  Guild,
+  GuildBasedChannel,
+  GuildChannel,
+  Intents,
+  Snowflake,
+  User
+} from 'discord.js';
 import TuvFormData from '../helpers/interfaces/tuvForms';
 import Canvas, { registerFont } from 'canvas';
 import app from '../app';
@@ -144,7 +153,7 @@ export default class DiscordBot {
         if (!this.guild) return;
 
         if (placeholder) {
-          let channel: GuildChannel | null = null;
+          let channel: GuildBasedChannel | GuildChannel | null = null;
           if (id) {
             try {
               channel = await this.guild.channels.fetch(id);
@@ -169,7 +178,7 @@ export default class DiscordBot {
         if (servers.length - 1 > realIndex) newName = name.replace('{p}', servers[realIndex].players);
         else newName = 'Server unavailable';
 
-        let channel: GuildChannel | null = null;
+        let channel: GuildBasedChannel | GuildChannel | null = null;
         if (id) {
           try {
             channel = await this.guild.channels.fetch(id);
